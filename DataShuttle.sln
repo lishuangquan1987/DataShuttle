@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataShuttle.Core", "DataShuttle.Core\DataShuttle.Core.csproj", "{A8EECA1B-E031-46D6-93A3-F074DA488365}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8EECA1B-E031-46D6-93A3-F074DA488365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8EECA1B-E031-46D6-93A3-F074DA488365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8EECA1B-E031-46D6-93A3-F074DA488365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8EECA1B-E031-46D6-93A3-F074DA488365}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3B2AAF21-B698-4998-9AAC-6814408A8F78}
+	EndGlobalSection
+EndGlobal
