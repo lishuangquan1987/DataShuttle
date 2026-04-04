@@ -1,11 +1,12 @@
 ﻿using DataShuttle.Core.Interfaces;
+using DataShuttle.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataShuttle.Core.Models
+namespace DataShuttle
 {
     public class ShuttleLineBuilder
     {

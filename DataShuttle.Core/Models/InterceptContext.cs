@@ -8,12 +8,11 @@ namespace DataShuttle.Core.Models
 {
     public class InterceptContext
     {
-        internal bool _isNext;
-        public void Next(byte[] data) 
+        public bool IsCancel { get; set; } = false;
+        public void Cancel()
         {
-            _isNext = true;
-            this.Data = data;
+            IsCancel = true;
         }
-        public byte[] Data { get; private set; }
+        public byte[] Data { get; set; }
     }
 }

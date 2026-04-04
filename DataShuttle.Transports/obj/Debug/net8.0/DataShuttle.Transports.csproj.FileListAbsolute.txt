@@ -1,0 +1,12 @@
+E:\Project2026\DataShuttle\DataShuttle.Transports\bin\Debug\net8.0\DataShuttle.Transports.deps.json
+E:\Project2026\DataShuttle\DataShuttle.Transports\bin\Debug\net8.0\DataShuttle.Transports.dll
+E:\Project2026\DataShuttle\DataShuttle.Transports\bin\Debug\net8.0\DataShuttle.Transports.pdb
+E:\Project2026\DataShuttle\DataShuttle.Transports\obj\Debug\net8.0\DataShuttle.Transports.GeneratedMSBuildEditorConfig.editorconfig
+E:\Project2026\DataShuttle\DataShuttle.Transports\obj\Debug\net8.0\DataShuttle.Transports.AssemblyInfoInputs.cache
+E:\Project2026\DataShuttle\DataShuttle.Transports\obj\Debug\net8.0\DataShuttle.Transports.AssemblyInfo.cs
+E:\Project2026\DataShuttle\DataShuttle.Transports\obj\Debug\net8.0\DataShuttle.Transports.csproj.CoreCompileInputs.cache
+E:\Project2026\DataShuttle\DataShuttle.Transports\obj\Debug\net8.0\DataShuttle.Transports.sourcelink.json
+E:\Project2026\DataShuttle\DataShuttle.Transports\obj\Debug\net8.0\DataShuttle.Transports.dll
+E:\Project2026\DataShuttle\DataShuttle.Transports\obj\Debug\net8.0\refint\DataShuttle.Transports.dll
+E:\Project2026\DataShuttle\DataShuttle.Transports\obj\Debug\net8.0\DataShuttle.Transports.pdb
+E:\Project2026\DataShuttle\DataShuttle.Transports\obj\Debug\net8.0\ref\DataShuttle.Transports.dll
