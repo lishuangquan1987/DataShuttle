@@ -10,12 +10,14 @@ namespace DataShuttle.Transports
 {
     public class SerialPortTransport : ITransport
     {
-        private System.IO.Ports.SerialPort _serialPort=new System.IO.Ports.SerialPort();
+        internal System.IO.Ports.SerialPort _serialPort=new System.IO.Ports.SerialPort();
         private bool _isConnected = false;
         private string? _errMsg;
         public bool IsConnected => _isConnected;
 
         public string? ErrorMsg => _errMsg;
+
+        public static SerialPortTransportBuilder CreateBuilder()=> new SerialPortTransportBuilder();
 
         public void Dispose()
         {
