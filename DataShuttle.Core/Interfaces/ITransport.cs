@@ -18,14 +18,18 @@ namespace DataShuttle.Core.Interfaces
         /// <returns></returns>
         Task<OperationResult<byte[]>> Read(CancellationToken token);
 
+        event Action<bool> OnConnectionStatusChanged;
+
         bool IsConnected { get; }
 
+        event Action<bool,string> OnErrorStatusChanged;
+        bool IsError { get; }
         string? ErrorMsg { get; }
         /// <summary>
         /// Start connect,when connect error,try all the time until Stop() called
         /// </summary>
         /// <returns></returns>
-        Task Start();
+        Task Run();
         Task Stop();
     }
 }

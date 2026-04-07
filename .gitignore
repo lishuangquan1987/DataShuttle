@@ -1,2 +1,8 @@
 .vs/
 DataShuttle.Core/obj/
+DataShuttle/obj/
+DataShuttle/bin/
+DataShuttle.Samples/obj/
+DataShuttle.Samples/bin/
+DataShuttle.Transports/obj/
+DataShuttle.Transports/bin/

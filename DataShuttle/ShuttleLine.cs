@@ -24,7 +24,7 @@ namespace DataShuttle
 
         public bool IsRunning => _isRunning;
 
-        public ShuttleLineBuilder CreateBuilder() => new ShuttleLineBuilder();
+        public static ShuttleLineBuilder CreateBuilder() => new ShuttleLineBuilder();
 
         public void Dispose()
         {
@@ -34,24 +34,28 @@ namespace DataShuttle
 
         public async Task Run()
         {
-            _isRunning = true;
-
             if (_tokenSource != null) await _tokenSource.CancelAsync();
 
             _tokenSource = new CancellationTokenSource();
 
-            await From.Start();
-            await To.Start();
+            _ = Task.Factory.StartNew(async () =>
+            {
+                var token = _tokenSource.Token;
 
-            var t1 = HandleData(From, To, FromDataIntercept, _tokenSource.Token);
-            var t2 = HandleData(To, From, ToDataIntercept, _tokenSource.Token);
+                _isRunning = true;
+                await From.Run();
+                await To.Run();
 
-            await t1;
-            await t2;
+                var t1 = HandleData(From, To, FromDataIntercept, token);
+                var t2 = HandleData(To, From, ToDataIntercept, token);
 
-            await From.Stop();
-            await To.Stop();
-            _isRunning = false;
+                await t1;
+                await t2;
+
+                await From.Stop();
+                await To.Stop();
+                _isRunning = false;
+            });
         }
 
         public async Task Stop()

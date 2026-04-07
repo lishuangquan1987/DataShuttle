@@ -14,4 +14,8 @@
     <ProjectReference Include="..\DataShuttle.Core\DataShuttle.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TcpClient\" />
+  </ItemGroup>
+
 </Project>
