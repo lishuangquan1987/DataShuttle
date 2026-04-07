@@ -1,6 +1,0 @@
-E:\Project2026\DataShuttle\DataShuttle\obj\Debug\net8.0\DataShuttle.csproj.AssemblyReference.cache
-E:\Project2026\DataShuttle\DataShuttle\obj\Debug\net8.0\DataShuttle.GeneratedMSBuildEditorConfig.editorconfig
-E:\Project2026\DataShuttle\DataShuttle\obj\Debug\net8.0\DataShuttle.AssemblyInfoInputs.cache
-E:\Project2026\DataShuttle\DataShuttle\obj\Debug\net8.0\DataShuttle.AssemblyInfo.cs
-E:\Project2026\DataShuttle\DataShuttle\obj\Debug\net8.0\DataShuttle.csproj.CoreCompileInputs.cache
-E:\Project2026\DataShuttle\DataShuttle\obj\Debug\net8.0\DataShuttle.sourcelink.json

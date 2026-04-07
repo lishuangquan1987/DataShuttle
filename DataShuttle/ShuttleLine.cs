@@ -77,7 +77,7 @@ namespace DataShuttle
                 //过滤
                 intercept?.Invoke(context);
 
-                if (!context.IsCancel) continue;
+                if (context.IsCancel) continue;
 
                 var writeDataResult = await to.Write(context.Data, token);
                 if (!writeDataResult.IsSuccess) continue;

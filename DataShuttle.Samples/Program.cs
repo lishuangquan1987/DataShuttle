@@ -8,11 +8,11 @@ Console.WriteLine("Hello, World!");
 var line = ShuttleLine.CreateBuilder()
     .AddFrom(SerialPortTransport.Create(new SerialPortTranportOptions()
     {
-        PortName = "COM1"
+        PortName = "COM11"
     }))
     .AddTo(SerialPortTransport.Create(new SerialPortTranportOptions()
     {
-        PortName = "COM2"
+        PortName = "COM21"
     }))
     .Build();
 
