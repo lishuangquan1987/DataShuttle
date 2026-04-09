@@ -2,10 +2,7 @@
 using DataShuttle.Core.Interfaces;
 using DataShuttle.Core.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DataShuttle.Transports.SerialPort
@@ -13,7 +10,7 @@ namespace DataShuttle.Transports.SerialPort
     public class SerialPortTransport : ITransport
     {
         private System.IO.Ports.SerialPort? _serialPort;
-        private SerialPortTranportOptions _options;
+        private SerialPortTransportOptions _options;
         private CancellationTokenSource? _startTokenSource;
 
 
@@ -29,10 +26,11 @@ namespace DataShuttle.Transports.SerialPort
         public string? ErrorMsg => _errMsg;
 
         public bool IsError => _isError;
+        public string Name => "串口";
 
-        private SerialPortTransport(SerialPortTranportOptions options) { this._options = options; }
+        private SerialPortTransport(SerialPortTransportOptions options) { this._options = options; }
 
-        public static SerialPortTransport Create(SerialPortTranportOptions options) => new SerialPortTransport(options);
+        public static SerialPortTransport Create(SerialPortTransportOptions options) => new SerialPortTransport(options);
 
         public void Dispose()
         {
@@ -142,7 +140,7 @@ namespace DataShuttle.Transports.SerialPort
         public async Task Stop()
         {
             if (_startTokenSource != null)
-                await _startTokenSource.CancelAsync();
+                 _startTokenSource.Cancel();
 
             if (_serialPort != null)
             {

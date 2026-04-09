@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace DataShuttle.Core.Models
 {
     public class OperationResult
@@ -18,7 +13,7 @@ namespace DataShuttle.Core.Models
 
     public class OperationResult<T> : OperationResult
     {
-        public T? Data { get; set; }
+        public T Data { get; set; }
 
         public static OperationResult<T> OK(T data) => new OperationResult<T> { IsSuccess = true, Data = data };
         public static OperationResult<T> NG(string errorMsg) => new OperationResult<T> { IsSuccess = false, ErrorMsg = errorMsg };

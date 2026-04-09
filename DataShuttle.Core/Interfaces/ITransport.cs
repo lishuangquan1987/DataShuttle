@@ -1,14 +1,13 @@
 ﻿using DataShuttle.Core.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DataShuttle.Core.Interfaces
 {
     public interface ITransport:IDisposable
     {
+        string Name { get; }
         Task<OperationResult> Write(byte[] data,CancellationToken token);
 
         /// <summary>
@@ -22,7 +21,7 @@ namespace DataShuttle.Core.Interfaces
 
         bool IsConnected { get; }
 
-        event Action<bool,string> OnErrorStatusChanged;
+        event Action<bool,string?> OnErrorStatusChanged;
         bool IsError { get; }
         string? ErrorMsg { get; }
         /// <summary>

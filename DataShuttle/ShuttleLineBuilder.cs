@@ -1,22 +1,18 @@
-﻿using DataShuttle.Core.Interfaces;
+﻿using System;
+using DataShuttle.Core.Interfaces;
 using DataShuttle.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataShuttle
 {
     public class ShuttleLineBuilder
     {
-        private ShuttleLine _shuttleLine=new();
-        public ShuttleLineBuilder AddFrom(ITransport from) 
+        private ShuttleLine _shuttleLine = new ShuttleLine();
+        public ShuttleLineBuilder AddFrom(ITransport from)
         {
             this._shuttleLine.From = from;
             return this;
         }
-        public ShuttleLineBuilder AddTo(ITransport to) 
+        public ShuttleLineBuilder AddTo(ITransport to)
         {
             this._shuttleLine.To = to;
             return this;

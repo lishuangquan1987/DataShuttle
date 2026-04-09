@@ -1,10 +1,9 @@
-﻿using DataShuttle.Core.Interfaces;
-using DataShuttle.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using DataShuttle.Core.Helper;
+using DataShuttle.Core.Interfaces;
+using DataShuttle.Core.Models;
 
 namespace DataShuttle
 {
@@ -16,11 +15,34 @@ namespace DataShuttle
         private Action<InterceptContext>? _toDataIntercept;
         private CancellationTokenSource _tokenSource;
         private bool _isRunning;
-        public ShuttleLine() { }
-        public ITransport From { get => _from; set => _from = value; }
-        public ITransport To { get => _to; set => _to = value; }
-        public Action<InterceptContext>? FromDataIntercept { get => _fromDataIntercept; set => _fromDataIntercept = value; }
-        public Action<InterceptContext>? ToDataIntercept { get => _toDataIntercept; set => _toDataIntercept = value; }
+
+        public ShuttleLine()
+        {
+        }
+
+        public ITransport From
+        {
+            get => _from;
+            set => _from = value;
+        }
+
+        public ITransport To
+        {
+            get => _to;
+            set => _to = value;
+        }
+
+        public Action<InterceptContext>? FromDataIntercept
+        {
+            get => _fromDataIntercept;
+            set => _fromDataIntercept = value;
+        }
+
+        public Action<InterceptContext>? ToDataIntercept
+        {
+            get => _toDataIntercept;
+            set => _toDataIntercept = value;
+        }
 
         public bool IsRunning => _isRunning;
 
@@ -34,7 +56,7 @@ namespace DataShuttle
 
         public async Task Run()
         {
-            if (_tokenSource != null) await _tokenSource.CancelAsync();
+            if (_tokenSource != null) _tokenSource.Cancel();
 
             _tokenSource = new CancellationTokenSource();
 
@@ -62,16 +84,25 @@ namespace DataShuttle
         {
             if (_tokenSource != null)
             {
-                await _tokenSource.CancelAsync();
+                _tokenSource.Cancel();
             }
         }
 
-        private async Task HandleData(ITransport from, ITransport to, Action<InterceptContext>? intercept, CancellationToken token)
+        private async Task HandleData(ITransport from, ITransport to, Action<InterceptContext>? intercept,
+            CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
                 var readDataResult = await from.Read(token);
-                if (!readDataResult.IsSuccess) continue;
+                if (!readDataResult.IsSuccess)
+                {
+                    if (!await MethodHelper.Delay(TimeSpan.FromMilliseconds(50), token))
+                    {
+                        return;
+                    }
+
+                    continue;
+                }
 
                 var context = new InterceptContext() { Data = readDataResult.Data };
                 //过滤
@@ -80,9 +111,16 @@ namespace DataShuttle
                 if (context.IsCancel) continue;
 
                 var writeDataResult = await to.Write(context.Data, token);
-                if (!writeDataResult.IsSuccess) continue;
-            }
+                if (!writeDataResult.IsSuccess)
+                {
+                    if (!await MethodHelper.Delay(TimeSpan.FromMilliseconds(50), token))
+                    {
+                        return;
+                    }
 
+                    continue;
+                }
+            }
         }
     }
 }
