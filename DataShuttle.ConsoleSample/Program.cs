@@ -1,11 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
-using DataShuttle;
+﻿using DataShuttle;
 using DataShuttle.Transports.SerialPort;
 using DataShuttle.Transports.TcpClient;
+using System;
 
 public class Program
 {
-    public static async Task Main1(string[] args)
+    public static async void Main1(string[] args)
     {
         var line = ShuttleLine.CreateBuilder()
             .AddFrom(SerialPortTransport.Create(new SerialPortTransportOptions()
@@ -22,21 +22,21 @@ public class Program
         Console.ReadLine();
     }
 
-    public static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
         var line = ShuttleLine.CreateBuilder()
-            .AddFrom(TCPClientTransport.Create(new TCPClientTransportOptions()
+            .AddFrom(TcpClientTransport.Create(new TcpClientTransportOptions()
             {
                 ServerIp = "127.0.0.1",
                 ServerPort = 777
             }))
-            .AddTo(TCPClientTransport.Create(new TCPClientTransportOptions()
+            .AddTo(TcpClientTransport.Create(new TcpClientTransportOptions()
             {
                 ServerIp = "127.0.0.1",
                 ServerPort = 888
             }))
             .Build();
-        await line.Run();
+        line.Run().GetAwaiter().GetResult();
         Console.WriteLine("启动成功！");
         Console.ReadLine();
     }

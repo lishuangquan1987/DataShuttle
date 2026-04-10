@@ -9,21 +9,21 @@ namespace DataShuttle.Transports.SerialPort
 {
     public class SerialPortTransport : ITransport
     {
-        private System.IO.Ports.SerialPort? _serialPort;
+        private System.IO.Ports.SerialPort _serialPort;
         private SerialPortTransportOptions _options;
-        private CancellationTokenSource? _startTokenSource;
+        private CancellationTokenSource _startTokenSource;
 
 
         private bool _isConnected = false;
         private bool _isError = false;
-        private string? _errMsg;
+        private string _errMsg;
 
         public event Action<bool> OnConnectionStatusChanged;
         public event Action<bool, string> OnErrorStatusChanged;
         private CancellationTokenSource _readTokenSource = new CancellationTokenSource();
 
         public bool IsConnected => _isConnected;
-        public string? ErrorMsg => _errMsg;
+        public string ErrorMsg => _errMsg;
 
         public bool IsError => _isError;
         public string Name => "串口";
@@ -50,7 +50,7 @@ namespace DataShuttle.Transports.SerialPort
             //读取串口数据
             try
             {
-                var bytes = new byte[_serialPort!.BytesToRead];
+                var bytes = new byte[_serialPort.BytesToRead];
                 _serialPort.Read(bytes, 0, bytes.Length);
                 return OperationResult<byte[]>.OK(bytes);
             }

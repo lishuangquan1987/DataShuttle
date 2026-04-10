@@ -9,8 +9,8 @@ namespace DataShuttle.Core.Interfaces
         bool IsRunning { get; }
         ITransport From { get; set; }
         ITransport To { get; set; }
-        Action<InterceptContext>? FromDataIntercept { get; set; }
-        Action<InterceptContext>? ToDataIntercept { get; set; }
+        Action<InterceptContext> FromDataIntercept { get; set; }
+        Action<InterceptContext> ToDataIntercept { get; set; }
 
         Task Run();
         Task Stop();

@@ -11,8 +11,8 @@ namespace DataShuttle
     {
         private ITransport _from;
         private ITransport _to;
-        private Action<InterceptContext>? _fromDataIntercept;
-        private Action<InterceptContext>? _toDataIntercept;
+        private Action<InterceptContext> _fromDataIntercept;
+        private Action<InterceptContext> _toDataIntercept;
         private CancellationTokenSource _tokenSource;
         private bool _isRunning;
 
@@ -32,13 +32,13 @@ namespace DataShuttle
             set => _to = value;
         }
 
-        public Action<InterceptContext>? FromDataIntercept
+        public Action<InterceptContext> FromDataIntercept
         {
             get => _fromDataIntercept;
             set => _fromDataIntercept = value;
         }
 
-        public Action<InterceptContext>? ToDataIntercept
+        public Action<InterceptContext> ToDataIntercept
         {
             get => _toDataIntercept;
             set => _toDataIntercept = value;
@@ -88,7 +88,7 @@ namespace DataShuttle
             }
         }
 
-        private async Task HandleData(ITransport from, ITransport to, Action<InterceptContext>? intercept,
+        private async Task HandleData(ITransport from, ITransport to, Action<InterceptContext> intercept,
             CancellationToken token)
         {
             while (!token.IsCancellationRequested)

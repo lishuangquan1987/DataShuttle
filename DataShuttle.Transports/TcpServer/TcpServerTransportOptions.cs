@@ -6,7 +6,7 @@ namespace DataShuttle.Transports.TcpServer
 {
     public class TcpServerTransportOptions
     {
-        public string LocalIp { get; set; }
-        public string LocalPort { get; set; }
+        public string BindingIp { get; set; }
+        public string BindingPort { get; set; }
     }
 }

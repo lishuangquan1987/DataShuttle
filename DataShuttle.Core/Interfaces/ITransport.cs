@@ -21,9 +21,9 @@ namespace DataShuttle.Core.Interfaces
 
         bool IsConnected { get; }
 
-        event Action<bool,string?> OnErrorStatusChanged;
+        event Action<bool,string> OnErrorStatusChanged;
         bool IsError { get; }
-        string? ErrorMsg { get; }
+        string ErrorMsg { get; }
         /// <summary>
         /// Start connect,when connect error,try all the time until Stop() called
         /// </summary>

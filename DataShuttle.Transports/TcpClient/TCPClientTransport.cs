@@ -12,31 +12,31 @@ using TouchSocket.Sockets;
 
 namespace DataShuttle.Transports.TcpClient
 {
-    public class TCPClientTransport : DataShuttle.Core.Interfaces.ITransport
+    public class TcpClientTransport : DataShuttle.Core.Interfaces.ITransport
     {
-        private TouchSocket.Sockets.TcpClient? _tcpClient;
-        private TCPClientTransportOptions _options;
-        private CancellationTokenSource? _startTokenSource;
-        private IReceiver<IReceiverResult>? _receiver;
+        private TouchSocket.Sockets.TcpClient _tcpClient;
+        private TcpClientTransportOptions _options;
+        private CancellationTokenSource _startTokenSource;
+        private IReceiver<IReceiverResult> _receiver = null;
         private bool _isConnected;
         private bool _isError;
-        private string? _errMsg;
+        private string _errMsg;
         public bool IsConnected => _isConnected;
 
         public bool IsError => _isError;
 
-        public string? ErrorMsg => _errMsg;
+        public string ErrorMsg => _errMsg;
         public string Name => "TCP客户端";
 
         public event Action<bool> OnConnectionStatusChanged;
-        public event Action<bool, string?> OnErrorStatusChanged;
+        public event Action<bool, string> OnErrorStatusChanged;
 
-        private TCPClientTransport(TCPClientTransportOptions options)
+        private TcpClientTransport(TcpClientTransportOptions options)
         {
             this._options = options;
         }
 
-        public static TCPClientTransport Create(TCPClientTransportOptions options) => new TCPClientTransport(options);
+        public static TcpClientTransport Create(TcpClientTransportOptions options) => new TcpClientTransport(options);
 
         public void Dispose()
         {
@@ -95,7 +95,7 @@ namespace DataShuttle.Transports.TcpClient
             });
         }
 
-        private void SetError(bool isError, string? errorMsg = null)
+        private void SetError(bool isError, string errorMsg = null)
         {
             if (!_isError && !isError) return;
 

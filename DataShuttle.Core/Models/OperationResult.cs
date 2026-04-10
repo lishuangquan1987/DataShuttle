@@ -4,7 +4,7 @@ namespace DataShuttle.Core.Models
     public class OperationResult
     {
         public bool IsSuccess { get; set; }
-        public string? ErrorMsg { get; set; }
+        public string ErrorMsg { get; set; }
 
         public static OperationResult OK() => new OperationResult { IsSuccess = true };
         public static OperationResult NG(string errorMsg) => new OperationResult { IsSuccess = false, ErrorMsg = errorMsg };

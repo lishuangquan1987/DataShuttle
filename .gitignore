@@ -8,3 +8,6 @@ DataShuttle.Transports/obj/
 DataShuttle.Transports/bin/
 DataShuttle.Core/bin/
 DataShuttle.sln.DotSettings.user
+.idea/
+DataShuttle.ConsoleSample/bin/
+DataShuttle.WpfSample/bin/
