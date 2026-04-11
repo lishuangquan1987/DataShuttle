@@ -11,3 +11,5 @@ DataShuttle.sln.DotSettings.user
 .idea/
 DataShuttle.ConsoleSample/bin/
 DataShuttle.WpfSample/bin/
+DataShuttle.ConsoleSample/obj/
+DataShuttle.WpfSample/obj/

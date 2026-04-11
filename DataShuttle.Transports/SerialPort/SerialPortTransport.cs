@@ -98,8 +98,11 @@ namespace DataShuttle.Transports.SerialPort
                             Parity = (System.IO.Ports.Parity)_options.Parity,
                             DataBits = _options.DataBits,
                             StopBits = (System.IO.Ports.StopBits)_options.StopBits,
+                            ReadTimeout = 1000,
+                            WriteTimeout = 1000,
                             ReceivedBytesThreshold = 1
                         };
+
 
                         _serialPort.DataReceived += SerialPort_DataReceived;
                         _serialPort.Open();
@@ -140,7 +143,7 @@ namespace DataShuttle.Transports.SerialPort
         public async Task Stop()
         {
             if (_startTokenSource != null)
-                 _startTokenSource.Cancel();
+                _startTokenSource.Cancel();
 
             if (_serialPort != null)
             {
