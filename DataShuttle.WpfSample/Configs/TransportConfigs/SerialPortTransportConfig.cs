@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,8 +37,8 @@ namespace DataShuttle.WpfSample.Configs.TransportConfigs
             set => SetProperty(ref bauRate, value);
         }
 
-        private int parity = (int)System.IO.Ports.Parity.None;
-        public int Parity
+        private Parity parity = System.IO.Ports.Parity.None;
+        public Parity Parity
         {
             get => parity;
             set => SetProperty(ref parity, value);
@@ -50,8 +51,8 @@ namespace DataShuttle.WpfSample.Configs.TransportConfigs
             set => SetProperty(ref dataBits, value);
         }
 
-        private int stopBits = (int)System.IO.Ports.StopBits.One;
-        public int StopBits
+        private StopBits stopBits = System.IO.Ports.StopBits.One;
+        public StopBits StopBits
         {
             get => stopBits;
             set => SetProperty(ref stopBits, value);

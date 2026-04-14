@@ -20,7 +20,10 @@ namespace DataShuttle.Transports.TcpServer
         private TcpService _tcpService;
         private TcpServerTransportOptions _options;
         private ConcurrentQueue<byte[]> buffer = new ConcurrentQueue<byte[]>();
-
+        public TcpServerTransport()//供反射调用
+        {
+            
+        }
         private TcpServerTransport(TcpServerTransportOptions options)
         {
             this._options = options;

@@ -31,6 +31,10 @@ namespace DataShuttle.Transports.TcpClient
         public event Action<bool> OnConnectionStatusChanged;
         public event Action<bool, string> OnErrorStatusChanged;
 
+        public TcpClientTransport()//供反射调用
+        {
+            
+        }
         private TcpClientTransport(TcpClientTransportOptions options)
         {
             this._options = options;

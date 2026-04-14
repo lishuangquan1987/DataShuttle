@@ -29,6 +29,7 @@
                 Height="30"
                 Margin="5"
                 HorizontalAlignment="Left"
+                Command="{Binding AddItemConfig}"
                 Style="{StaticResource ButtonPrimary}"
                 ToolTip="添加设置">
                 <StackPanel Orientation="Horizontal">

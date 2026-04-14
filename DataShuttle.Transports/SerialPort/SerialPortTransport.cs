@@ -27,7 +27,7 @@ namespace DataShuttle.Transports.SerialPort
 
         public bool IsError => _isError;
         public string Name => "串口";
-
+        public SerialPortTransport() { }//供反射调用
         private SerialPortTransport(SerialPortTransportOptions options) { this._options = options; }
 
         public static SerialPortTransport Create(SerialPortTransportOptions options) => new SerialPortTransport(options);
@@ -95,9 +95,9 @@ namespace DataShuttle.Transports.SerialPort
                         {
                             PortName = _options.PortName,
                             BaudRate = _options.BauRate,
-                            Parity = (System.IO.Ports.Parity)_options.Parity,
+                            Parity = _options.Parity,
                             DataBits = _options.DataBits,
-                            StopBits = (System.IO.Ports.StopBits)_options.StopBits,
+                            StopBits = _options.StopBits,
                             ReadTimeout = 1000,
                             WriteTimeout = 1000,
                             ReceivedBytesThreshold = 1

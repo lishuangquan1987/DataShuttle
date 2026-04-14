@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using DataShuttle.WpfSample.Configs;
+using System.Configuration;
 using System.Data;
 using System.Windows;
 
@@ -9,6 +10,7 @@ namespace DataShuttle.WpfSample
     /// </summary>
     public partial class App : Application
     {
+        public static DefaultConfig<ConfigModel> Config { get; } = DefaultConfig<ConfigModel>.Instance;
     }
 
 }

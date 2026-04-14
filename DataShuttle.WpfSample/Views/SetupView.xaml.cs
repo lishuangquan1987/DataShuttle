@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DataShuttle.WpfSample.Configs;
+using DataShuttle.WpfSample.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,13 @@ namespace DataShuttle.WpfSample.Views
         public SetupView()
         {
             InitializeComponent();
+            this.DataContext = new SetupViewModel();
+        }
+
+        public SetupView(ItemConfig config)
+        {
+            InitializeComponent();
+            this.DataContext = new SetupViewModel(config);
         }
     }
 }
