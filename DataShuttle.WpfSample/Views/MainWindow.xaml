@@ -5,42 +5,283 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:icons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
-    xmlns:local="clr-namespace:DataShuttle.WpfSample"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:DataShuttle.WpfSample.Views"
+    xmlns:vm="clr-namespace:DataShuttle.WpfSample.ViewModels"
     Title="数据穿梭"
-    Width="800"
-    Height="450"
+    Width="1000"
+    Height="620"
+    d:DataContext="{d:DesignInstance vm:MainWindowViewModel}"
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="240" MinWidth="160" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <GridSplitter
-            Width="5"
-            HorizontalAlignment="Right"
-            Panel.ZIndex="100" />
-        <Grid>
+
+        <!-- ===== 左侧：列表 ===== -->
+        <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
+                <RowDefinition Height="44" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+
             <Button
-                Height="30"
-                Margin="5"
+                Grid.Row="0"
+                Height="32"
+                Margin="8,6"
                 HorizontalAlignment="Left"
-                Command="{Binding AddItemConfig}"
-                Style="{StaticResource ButtonPrimary}"
-                ToolTip="添加设置">
+                Command="{Binding AddItemCommand}"
+                Style="{StaticResource ButtonPrimary}">
                 <StackPanel Orientation="Horizontal">
                     <icons:MaterialIcon VerticalAlignment="Center" Kind="Add" />
-                    <TextBlock
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="添加" />
+                    <TextBlock Margin="4,0,0,0" VerticalAlignment="Center" Text="添加" />
                 </StackPanel>
             </Button>
-            <ListBox Grid.Row="1"></ListBox>
+
+            <ListBox
+                Grid.Row="1"
+                ItemsSource="{Binding Items}"
+                SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource ListBoxItemBaseStyle}" TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="6,4" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:ShuttleLineItemViewModel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- From -->
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <Ellipse
+                                    Width="8" Height="8"
+                                    Margin="0,0,5,0"
+                                    VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#CCC" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding FromIsConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="#4CAF50" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock
+                                    FontSize="12"
+                                    Text="{Binding FromSummary}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+
+                            <!-- 箭头 -->
+                            <icons:MaterialIcon
+                                Grid.Row="1"
+                                Margin="13,1"
+                                FontSize="14"
+                                Foreground="{DynamicResource PrimaryBrush}"
+                                Kind="ArrowUpDown" />
+
+                            <!-- To -->
+                            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                <Ellipse
+                                    Width="8" Height="8"
+                                    Margin="0,0,5,0"
+                                    VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#CCC" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ToIsConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="#4CAF50" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock
+                                    FontSize="12"
+                                    Text="{Binding ToSummary}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <GridSplitter
+            Grid.Column="1"
+            Width="5"
+            HorizontalAlignment="Stretch" />
+
+        <!-- ===== 右侧：上下分栏 ===== -->
+        <Grid Grid.Column="2">
+            <!-- 未选中时的提示 -->
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="{DynamicResource SecondaryTextBrush}"
+                Text="← 请在左侧选择一条穿梭线"
+                Visibility="{Binding HasSelection, Converter={StaticResource Boolean2VisibilityReConverter}}" />
+
+            <Grid Visibility="{Binding HasSelection, Converter={StaticResource Boolean2VisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="160" MinHeight="120" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- ── 上：运行状态面板 ── -->
+                <Border
+                    Grid.Row="0"
+                    Margin="8,8,8,0"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                    <Grid Margin="12,8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- From 状态 -->
+                        <StackPanel Grid.Row="0" Margin="0,4" Orientation="Horizontal">
+                            <TextBlock Width="36" VerticalAlignment="Center" Text="左端：" />
+                            <TextBlock
+                                Margin="4,0"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{Binding SelectedItem.FromSummary}" />
+                            <Ellipse
+                                Width="10" Height="10"
+                                Margin="8,0,4,0"
+                                VerticalAlignment="Center">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Fill" Value="#CCC" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedItem.FromIsConnected}" Value="True">
+                                                <Setter Property="Fill" Value="#4CAF50" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding SelectedItem.FromStatusText}" />
+                        </StackPanel>
+
+                        <!-- To 状态 -->
+                        <StackPanel Grid.Row="1" Margin="0,4" Orientation="Horizontal">
+                            <TextBlock Width="36" VerticalAlignment="Center" Text="右端：" />
+                            <TextBlock
+                                Margin="4,0"
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="{Binding SelectedItem.ToSummary}" />
+                            <Ellipse
+                                Width="10" Height="10"
+                                Margin="8,0,4,0"
+                                VerticalAlignment="Center">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Fill" Value="#CCC" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedItem.ToIsConnected}" Value="True">
+                                                <Setter Property="Fill" Value="#4CAF50" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding SelectedItem.ToStatusText}" />
+                        </StackPanel>
+
+                        <!-- 错误信息 -->
+                        <TextBlock
+                            Grid.Row="2"
+                            Margin="0,2"
+                            Foreground="#E53935"
+                            Text="{Binding SelectedItem.ErrorText}"
+                            TextWrapping="Wrap"
+                            Visibility="{Binding SelectedItem.ErrorText, Converter={StaticResource String2VisibilityConverter}}" />
+
+                        <!-- 操作按钮 -->
+                        <StackPanel
+                            Grid.Row="4"
+                            HorizontalAlignment="Left"
+                            Orientation="Horizontal">
+                            <Button
+                                Margin="0,0,8,0"
+                                Command="{Binding SelectedItem.StartCmd}"
+                                Style="{StaticResource ButtonSuccess}">
+                                <StackPanel Orientation="Horizontal">
+                                    <icons:MaterialIcon Kind="Play" />
+                                    <TextBlock Margin="4,0,0,0" Text="启动" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                                Margin="0,0,8,0"
+                                Command="{Binding SelectedItem.StopCmd}"
+                                Style="{StaticResource ButtonDanger}">
+                                <StackPanel Orientation="Horizontal">
+                                    <icons:MaterialIcon Kind="Stop" />
+                                    <TextBlock Margin="4,0,0,0" Text="停止" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                                Margin="0,0,8,0"
+                                Command="{Binding EditItemCommand}"
+                                CommandParameter="{Binding SelectedItem}"
+                                Style="{StaticResource ButtonInfo}">
+                                <StackPanel Orientation="Horizontal">
+                                    <icons:MaterialIcon Kind="Pencil" />
+                                    <TextBlock Margin="4,0,0,0" Text="编辑" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                                Command="{Binding DeleteItemCommand}"
+                                CommandParameter="{Binding SelectedItem}"
+                                Style="{StaticResource ButtonDanger}">
+                                <StackPanel Orientation="Horizontal">
+                                    <icons:MaterialIcon Kind="Delete" />
+                                    <TextBlock Margin="4,0,0,0" Text="删除" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <GridSplitter
+                    Grid.Row="1"
+                    Height="5"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch" />
+
+                <!-- ── 下：脚本编辑面板 ── -->
+                <Border
+                    Grid.Row="2"
+                    Margin="8,0,8,8"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                    <views:ScriptEditorView
+                        Margin="4"
+                        DataContext="{Binding ScriptEditor}" />
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </hc:Window>

@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net8.0-windows;net6.0-windows;net472</TargetFrameworks>
+    <TargetFramework>net472</TargetFramework>
     <UseWPF>true</UseWPF>
     <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +13,7 @@
     <PackageReference Include="HandyControl" Version="3.5.1" />
     <PackageReference Include="Material.Icons.WPF" Version="3.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NLua" Version="1.7.8" />
   </ItemGroup>
 
   <ItemGroup>
