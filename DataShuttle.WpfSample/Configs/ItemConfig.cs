@@ -1,9 +1,16 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DataShuttle.WpfSample.Configs
 {
     public class ItemConfig : ObservableObject
     {
+        private string _name = "新线路";
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
+
         public TransportConfig FromTransportConfig { get; set; } = new TransportConfig();
         public TransportConfig ToTransportConfig { get; set; } = new TransportConfig();
 

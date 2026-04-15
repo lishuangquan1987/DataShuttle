@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DataShuttle.Core.Models;
 using DataShuttle.WpfSample.Configs;
@@ -33,7 +33,6 @@ namespace DataShuttle.WpfSample.ViewModels
 
         public MainWindowViewModel()
         {
-            // 从持久化配置恢复
             foreach (var cfg in App.Config.Config.ItemConfigs)
                 Items.Add(new ShuttleLineItemViewModel(cfg));
         }
@@ -65,8 +64,8 @@ namespace DataShuttle.WpfSample.ViewModels
 
             if (!result.IsSuccess) return;
 
-            // SetupView 返回的是副本，需要把数据写回原 Config
             var updated = result.Data;
+            item.Config.Name = updated.Name;
             item.Config.FromTransportConfig.Type = updated.FromTransportConfig.Type;
             item.Config.FromTransportConfig.SerialPortTransportConfig = updated.FromTransportConfig.SerialPortTransportConfig;
             item.Config.FromTransportConfig.TcpClientTransportConfig = updated.FromTransportConfig.TcpClientTransportConfig;
@@ -84,6 +83,13 @@ namespace DataShuttle.WpfSample.ViewModels
         private async Task DeleteItem(ShuttleLineItemViewModel item)
         {
             if (item == null) return;
+
+            if (HandyControl.Controls.MessageBox.Show(
+                $"确定要删除「{item.Config.Name}」吗？",
+                "删除确认",
+                System.Windows.MessageBoxButton.OKCancel,
+                System.Windows.MessageBoxImage.Warning) != System.Windows.MessageBoxResult.OK) return;
+
             if (item.IsRunning) await item.ForceStop();
 
             App.Config.Config.ItemConfigs.Remove(item.Config);

@@ -1,6 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DataShuttle.Core.Helper;
 using DataShuttle.Core.Models;
 using DataShuttle.WpfSample.Configs;
 using DataShuttle.WpfSample.Helpers;
@@ -10,8 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -19,7 +16,6 @@ namespace DataShuttle.WpfSample.ViewModels
 {
     public class SetupViewModel : ObservableObject, IDialogResultable<OperationResult<ItemConfig>>
     {
-        //新建时调用
         public SetupViewModel()
         {
             ItemConfig = new ItemConfig();
@@ -27,13 +23,12 @@ namespace DataShuttle.WpfSample.ViewModels
             CancelCmd = new AsyncRelayCommand(Cancel);
             BindingPropertyChanged(ItemConfig);
 
-            FromTransportConfigPropertyChanged(ItemConfig.FromTransportConfig, new PropertyChangedEventArgs(nameof(TransportConfig.Type)) );
+            FromTransportConfigPropertyChanged(ItemConfig.FromTransportConfig, new PropertyChangedEventArgs(nameof(TransportConfig.Type)));
             ToTransportConfigPropertyChanged(ItemConfig.ToTransportConfig, new PropertyChangedEventArgs(nameof(TransportConfig.Type)));
         }
 
         public SetupViewModel(ItemConfig itemConfig) : this()
         {
-            //复制一份
             var json = JsonConvert.SerializeObject(itemConfig);
             var copy = JsonConvert.DeserializeObject<ItemConfig>(json);
 
@@ -50,55 +45,43 @@ namespace DataShuttle.WpfSample.ViewModels
             itemConfig.FromTransportConfig.PropertyChanged += FromTransportConfigPropertyChanged;
             itemConfig.ToTransportConfig.PropertyChanged += ToTransportConfigPropertyChanged;
         }
+
         private void UnBindingPropertyChanged(ItemConfig itemConfig)
         {
             itemConfig.FromTransportConfig.PropertyChanged -= FromTransportConfigPropertyChanged;
             itemConfig.ToTransportConfig.PropertyChanged -= ToTransportConfigPropertyChanged;
         }
+
         private void FromTransportConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(TransportConfig.Type)) return;
-
-            this.From串口ConfigVisibility = Visibility.Collapsed;
-            this.FromTcpClientConfigVisibility = Visibility.Collapsed;
-            this.FromTcpServerConfigVisibility = Visibility.Collapsed;
-
+            From串口ConfigVisibility = Visibility.Collapsed;
+            FromTcpClientConfigVisibility = Visibility.Collapsed;
+            FromTcpServerConfigVisibility = Visibility.Collapsed;
             var transportConfig = (TransportConfig)sender;
             switch (transportConfig.Type)
             {
-                case "串口":
-                    this.From串口ConfigVisibility = Visibility.Visible;
-                    break;
-                case "TCP客户端":
-                    this.FromTcpClientConfigVisibility = Visibility.Visible;
-                    break;
-                case "TCP服务器":
-                    this.FromTcpServerConfigVisibility = Visibility.Visible;
-                    break;
+                case "串口": From串口ConfigVisibility = Visibility.Visible; break;
+                case "TCP客户端": FromTcpClientConfigVisibility = Visibility.Visible; break;
+                case "TCP服务端": FromTcpServerConfigVisibility = Visibility.Visible; break;
             }
         }
+
         private void ToTransportConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(TransportConfig.Type)) return;
-
-            this.To串口ConfigVisibility = Visibility.Collapsed;
-            this.ToTcpClientConfigVisibility = Visibility.Collapsed;
-            this.ToTcpServerConfigVisibility = Visibility.Collapsed;
-
+            To串口ConfigVisibility = Visibility.Collapsed;
+            ToTcpClientConfigVisibility = Visibility.Collapsed;
+            ToTcpServerConfigVisibility = Visibility.Collapsed;
             var transportConfig = (TransportConfig)sender;
             switch (transportConfig.Type)
             {
-                case "串口":
-                    this.To串口ConfigVisibility = Visibility.Visible;
-                    break;
-                case "TCP客户端":
-                    this.ToTcpClientConfigVisibility = Visibility.Visible;
-                    break;
-                case "TCP服务器":
-                    this.ToTcpServerConfigVisibility = Visibility.Visible;
-                    break;
+                case "串口": To串口ConfigVisibility = Visibility.Visible; break;
+                case "TCP客户端": ToTcpClientConfigVisibility = Visibility.Visible; break;
+                case "TCP服务端": ToTcpServerConfigVisibility = Visibility.Visible; break;
             }
         }
+
         private async Task Cancel()
         {
             Result = OperationResult<ItemConfig>.NG("取消操作");
@@ -115,6 +98,7 @@ namespace DataShuttle.WpfSample.ViewModels
         public Parity[] Parities { get; } = Enum.GetValues(typeof(Parity)) as Parity[];
         public StopBits[] StopBits { get; } = Enum.GetValues(typeof(StopBits)) as StopBits[];
         public List<string> PluginNames { get; } = PluginHelper.GetPluginNames();
+        public List<int> BaudRates { get; } = new List<int> { 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
 
         public ItemConfig ItemConfig { get; private set; }
 
@@ -156,7 +140,6 @@ namespace DataShuttle.WpfSample.ViewModels
         public Visibility FromTcpServerConfigVisibility
         {
             get => _fromTcpServerConfigVisibility;
-
             set => SetProperty(ref _fromTcpServerConfigVisibility, value);
         }
 

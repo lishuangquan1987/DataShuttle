@@ -39,7 +39,11 @@ namespace DataShuttle.WpfSample.ViewModels
             get => _config?.FromInterceptorScript;
             set
             {
-                if (_config != null) _config.FromInterceptorScript = value;
+                if (_config != null)
+                {
+                    _config.FromInterceptorScript = value;
+                    App.Config.SaveConfig(false);
+                }
                 OnPropertyChanged();
             }
         }
@@ -49,7 +53,11 @@ namespace DataShuttle.WpfSample.ViewModels
             get => _config?.ToInterceptorScript;
             set
             {
-                if (_config != null) _config.ToInterceptorScript = value;
+                if (_config != null)
+                {
+                    _config.ToInterceptorScript = value;
+                    App.Config.SaveConfig(false);
+                }
                 OnPropertyChanged();
             }
         }
