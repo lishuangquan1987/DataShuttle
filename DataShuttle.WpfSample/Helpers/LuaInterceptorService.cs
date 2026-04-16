@@ -19,6 +19,9 @@ namespace DataShuttle.WpfSample.Helpers
         public string LastError => _lastError;
         public bool HasError => _lastError != null;
 
+        /// <summary>脚本调用 log() 时触发，参数为日志内容</summary>
+        public Action<string> OnLog { get; set; }
+
         public bool Load(string script)
         {
             _lastError = null;
@@ -27,6 +30,10 @@ namespace DataShuttle.WpfSample.Helpers
                 _lua?.Dispose();
                 _lua = new Lua();
                 _lua.State.Encoding = Encoding.UTF8;
+
+                // 注入 log(msg) 方法，供脚本调用
+                _lua.RegisterFunction("log", this, typeof(LuaInterceptorService).GetMethod(nameof(LuaLog)));
+
                 _lua.DoString(script);
                 _func = _lua["intercept"] as LuaFunction;
                 if (_func == null)
@@ -41,6 +48,12 @@ namespace DataShuttle.WpfSample.Helpers
                 _lastError = ex.Message;
                 return false;
             }
+        }
+
+        /// <summary>供 NLua RegisterFunction 绑定，Lua 脚本中通过 log(msg) 调用</summary>
+        public void LuaLog(string message)
+        {
+            OnLog?.Invoke(message ?? "");
         }
 
         public void Intercept(InterceptContext ctx)

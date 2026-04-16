@@ -6,6 +6,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:icons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="clr-namespace:HandyControl.Interactivity;assembly=HandyControl"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:DataShuttle.WpfSample.ViewModels"
     Width="760"

@@ -130,19 +130,29 @@ namespace DataShuttle.WpfSample.ViewModels
 
             using (var svc = new LuaInterceptorService())
             {
+                var logs = new System.Collections.Generic.List<string>();
+                svc.OnLog = msg => logs.Add(msg);
+
                 if (!svc.Load(script))
                     return "✗ 脚本错误：" + svc.LastError;
 
                 var ctx = new InterceptContext { Data = inputBytes };
                 svc.Intercept(ctx);
 
-                if (ctx.IsCancel)
-                    return "→ 数据已丢弃（返回 nil）";
+                var sb = new StringBuilder();
+                if (logs.Count > 0)
+                    sb.AppendLine("📋 日志:\r\n" + string.Join("\r\n", logs) + "\r\n");
 
-                var hex = BitConverter.ToString(ctx.Data).Replace("-", " ");
-                var ascii = Encoding.ASCII.GetString(
-                    Array.ConvertAll(ctx.Data, b => b >= 32 && b < 127 ? b : (byte)'.'));
-                return "✓ 输出 [" + ctx.Data.Length + " 字节]\r\nHEX: " + hex + "\r\nASCII: " + ascii;
+                if (ctx.IsCancel)
+                    sb.Append("→ 数据已丢弃（返回 nil）");
+                else
+                {
+                    var hex = BitConverter.ToString(ctx.Data).Replace("-", " ");
+                    var ascii = Encoding.ASCII.GetString(
+                        Array.ConvertAll(ctx.Data, b => b >= 32 && b < 127 ? b : (byte)'.'));
+                    sb.Append("✓ 输出 [" + ctx.Data.Length + " 字节]\r\nHEX: " + hex + "\r\nASCII: " + ascii);
+                }
+                return sb.ToString();
             }
         }
     }

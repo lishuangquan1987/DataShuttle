@@ -153,6 +153,7 @@ namespace DataShuttle.WpfSample.ViewModels
             {
                 _fromInterceptor?.Dispose();
                 _fromInterceptor = new LuaInterceptorService();
+                _fromInterceptor.OnLog = msg => AddLog(LogLevel.Info, "[左脚本] " + msg);
                 if (_fromInterceptor.Load(Config.FromInterceptorScript))
                     fromIntercept = _fromInterceptor.Intercept;
                 else
@@ -163,6 +164,7 @@ namespace DataShuttle.WpfSample.ViewModels
             {
                 _toInterceptor?.Dispose();
                 _toInterceptor = new LuaInterceptorService();
+                _toInterceptor.OnLog = msg => AddLog(LogLevel.Info, "[右脚本] " + msg);
                 if (_toInterceptor.Load(Config.ToInterceptorScript))
                     toIntercept = _toInterceptor.Intercept;
                 else

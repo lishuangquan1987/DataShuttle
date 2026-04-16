@@ -337,7 +337,7 @@
             <Grid Visibility="{Binding HasSelection, Converter={StaticResource Boolean2VisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="48" />
-                    <RowDefinition MinHeight="210"  />
+                    <RowDefinition Height="210" MinHeight="210" />
                     <RowDefinition Height="4" />
                     <RowDefinition Height="*" MinHeight="140" />
                 </Grid.RowDefinitions>
