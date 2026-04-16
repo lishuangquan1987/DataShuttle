@@ -1,9 +1,8 @@
-﻿using DataShuttle.Core.Helper;
+using DataShuttle.Core.Helper;
 using DataShuttle.Core.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TouchSocket.Core;
@@ -15,18 +14,15 @@ namespace DataShuttle.Transports.TcpServer
     {
         private CancellationTokenSource _startTokenSource = new CancellationTokenSource();
         private CancellationTokenSource _readTokenSource = new CancellationTokenSource();
-        private bool _isError;
-        private string _errMsg;
         private TcpService _tcpService;
         private TcpServerTransportOptions _options;
-        private ConcurrentQueue<byte[]> buffer = new ConcurrentQueue<byte[]>();
-        public TcpServerTransport()//供反射调用
-        {
-            
-        }
+        private ConcurrentQueue<byte[]> _buffer = new ConcurrentQueue<byte[]>();
+
+        public TcpServerTransport() { }
+
         private TcpServerTransport(TcpServerTransportOptions options)
         {
-            this._options = options;
+            _options = options;
         }
 
         public static TcpServerTransport Create(TcpServerTransportOptions options) => new TcpServerTransport(options);
@@ -37,39 +33,23 @@ namespace DataShuttle.Transports.TcpServer
             _tcpService.ServerState == ServerState.Running &&
             _tcpService.Clients.Count > 0;
 
-        public bool IsError => _isError;
-
-        public string ErrorMsg => _errMsg;
-
         public event Action<bool> OnConnectionStatusChanged;
-        public event Action<bool, string> OnErrorStatusChanged;
+        public event Action<TransportErrorArgs> OnError;
 
-        public void Dispose()
-        {
-            _ = Stop();
-        }
-
-        private void RaiseErrorChanged(bool isError, string errMsg)
-        {
-            if (!_isError && !isError) return;
-
-            this.OnErrorStatusChanged?.Invoke(isError, errMsg);
-        }
+        public void Dispose() => _ = Stop();
 
         public async Task<OperationResult<byte[]>> Read(CancellationToken token)
         {
-            CancellationToken newToken = CancellationTokenSource.CreateLinkedTokenSource(token, _readTokenSource.Token).Token;
+            var newToken = CancellationTokenSource.CreateLinkedTokenSource(token, _readTokenSource.Token).Token;
             await MethodHelper.Delay(newToken);
-            if (token.IsCancellationRequested)
-            {
-                return OperationResult<byte[]>.NG("取消读取");
-            }
 
-            List<byte> result = new List<byte>();
-            while (buffer.TryDequeue(out byte[] data))
-            {
+            if (token.IsCancellationRequested)
+                return OperationResult<byte[]>.NG("取消读取");
+
+            var result = new List<byte>();
+            while (_buffer.TryDequeue(out byte[] data))
                 result.AddRange(data);
-            }
+
             _readTokenSource = new CancellationTokenSource();
             return OperationResult<byte[]>.OK(result.ToArray());
         }
@@ -83,38 +63,38 @@ namespace DataShuttle.Transports.TcpServer
             _tcpService.Connected += TcpServiceConnected;
             _tcpService.Closed += TcpServiceClosed;
             _tcpService.Received += TcpServiceReceived;
+
             while (!_startTokenSource.IsCancellationRequested)
             {
                 try
                 {
-                    await _tcpService.SetupAsync(new TouchSocket.Core.TouchSocketConfig()
-            .SetListenIPHosts($"tcp://{_options.BindingIp}:{_options.BindingPort}"));
+                    await _tcpService.SetupAsync(new TouchSocketConfig()
+                        .SetListenIPHosts($"tcp://{_options.BindingIp}:{_options.BindingPort}"));
                     await _tcpService.StartAsync(_startTokenSource.Token);
                     break;
                 }
                 catch (Exception e)
                 {
                     await MethodHelper.Delay(TimeSpan.FromSeconds(3), _startTokenSource.Token);
-                    RaiseErrorChanged(true, e.Message);
+                    OnError?.Invoke(TransportErrorArgs.Create("Connect", e.Message, e));
                 }
             }
-
         }
 
         private async Task TcpServiceReceived(TcpSessionClient client, ReceivedDataEventArgs e)
         {
-            buffer.Enqueue(e.Memory.Span.ToArray());
+            _buffer.Enqueue(e.Memory.Span.ToArray());
             _readTokenSource.Cancel();
         }
 
         private async Task TcpServiceClosed(TcpSessionClient client, ClosedEventArgs e)
         {
-            this.OnConnectionStatusChanged?.Invoke(IsConnected);
+            OnConnectionStatusChanged?.Invoke(IsConnected);
         }
 
         private async Task TcpServiceConnected(TcpSessionClient client, ConnectedEventArgs e)
         {
-            this.OnConnectionStatusChanged?.Invoke(IsConnected);
+            OnConnectionStatusChanged?.Invoke(IsConnected);
         }
 
         public async Task Stop()
@@ -135,15 +115,13 @@ namespace DataShuttle.Transports.TcpServer
             if (!IsConnected) return OperationResult.NG("未连接");
             try
             {
-                foreach (var clinet in _tcpService.Clients)
-                {
-                    await clinet.SendAsync(data, token);
-                }
+                foreach (var client in _tcpService.Clients)
+                    await client.SendAsync(data, token);
                 return OperationResult.OK();
             }
             catch (Exception e)
             {
-                RaiseErrorChanged(true, e.Message);
+                OnError?.Invoke(TransportErrorArgs.Create("Write", e.Message, e));
                 return OperationResult.NG(e);
             }
         }

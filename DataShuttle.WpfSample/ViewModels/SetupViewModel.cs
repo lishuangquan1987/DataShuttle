@@ -58,12 +58,18 @@ namespace DataShuttle.WpfSample.ViewModels
             From串口ConfigVisibility = Visibility.Collapsed;
             FromTcpClientConfigVisibility = Visibility.Collapsed;
             FromTcpServerConfigVisibility = Visibility.Collapsed;
+            FromUdpConfigVisibility = Visibility.Collapsed;
+            FromWebSocketClientConfigVisibility = Visibility.Collapsed;
+            FromWebSocketServerConfigVisibility = Visibility.Collapsed;
             var transportConfig = (TransportConfig)sender;
             switch (transportConfig.Type)
             {
                 case "串口": From串口ConfigVisibility = Visibility.Visible; break;
                 case "TCP客户端": FromTcpClientConfigVisibility = Visibility.Visible; break;
                 case "TCP服务端": FromTcpServerConfigVisibility = Visibility.Visible; break;
+                case "UDP": FromUdpConfigVisibility = Visibility.Visible; break;
+                case "WebSocket客户端": FromWebSocketClientConfigVisibility = Visibility.Visible; break;
+                case "WebSocket服务端": FromWebSocketServerConfigVisibility = Visibility.Visible; break;
             }
         }
 
@@ -73,12 +79,18 @@ namespace DataShuttle.WpfSample.ViewModels
             To串口ConfigVisibility = Visibility.Collapsed;
             ToTcpClientConfigVisibility = Visibility.Collapsed;
             ToTcpServerConfigVisibility = Visibility.Collapsed;
+            ToUdpConfigVisibility = Visibility.Collapsed;
+            ToWebSocketClientConfigVisibility = Visibility.Collapsed;
+            ToWebSocketServerConfigVisibility = Visibility.Collapsed;
             var transportConfig = (TransportConfig)sender;
             switch (transportConfig.Type)
             {
                 case "串口": To串口ConfigVisibility = Visibility.Visible; break;
                 case "TCP客户端": ToTcpClientConfigVisibility = Visibility.Visible; break;
                 case "TCP服务端": ToTcpServerConfigVisibility = Visibility.Visible; break;
+                case "UDP": ToUdpConfigVisibility = Visibility.Visible; break;
+                case "WebSocket客户端": ToWebSocketClientConfigVisibility = Visibility.Visible; break;
+                case "WebSocket服务端": ToWebSocketServerConfigVisibility = Visibility.Visible; break;
             }
         }
 
@@ -101,53 +113,45 @@ namespace DataShuttle.WpfSample.ViewModels
         public List<int> BaudRates { get; } = new List<int> { 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
 
         public ItemConfig ItemConfig { get; private set; }
-
         public OperationResult<ItemConfig> Result { get; set; }
         public Action CloseAction { get; set; }
-
         public AsyncRelayCommand SureCmd { get; }
         public AsyncRelayCommand CancelCmd { get; }
 
         private Visibility _from串口ConfigVisibility;
-        public Visibility From串口ConfigVisibility
-        {
-            get => _from串口ConfigVisibility;
-            set => SetProperty(ref _from串口ConfigVisibility, value);
-        }
+        public Visibility From串口ConfigVisibility { get => _from串口ConfigVisibility; set => SetProperty(ref _from串口ConfigVisibility, value); }
 
         private Visibility _to串口ConfigVisibility;
-        public Visibility To串口ConfigVisibility
-        {
-            get => _to串口ConfigVisibility;
-            set => SetProperty(ref _to串口ConfigVisibility, value);
-        }
+        public Visibility To串口ConfigVisibility { get => _to串口ConfigVisibility; set => SetProperty(ref _to串口ConfigVisibility, value); }
 
         private Visibility _fromTcpClientConfigVisibility;
-        public Visibility FromTcpClientConfigVisibility
-        {
-            get => _fromTcpClientConfigVisibility;
-            set => SetProperty(ref _fromTcpClientConfigVisibility, value);
-        }
+        public Visibility FromTcpClientConfigVisibility { get => _fromTcpClientConfigVisibility; set => SetProperty(ref _fromTcpClientConfigVisibility, value); }
 
         private Visibility _toTcpClientConfigVisibility;
-        public Visibility ToTcpClientConfigVisibility
-        {
-            get => _toTcpClientConfigVisibility;
-            set => SetProperty(ref _toTcpClientConfigVisibility, value);
-        }
+        public Visibility ToTcpClientConfigVisibility { get => _toTcpClientConfigVisibility; set => SetProperty(ref _toTcpClientConfigVisibility, value); }
 
         private Visibility _fromTcpServerConfigVisibility;
-        public Visibility FromTcpServerConfigVisibility
-        {
-            get => _fromTcpServerConfigVisibility;
-            set => SetProperty(ref _fromTcpServerConfigVisibility, value);
-        }
+        public Visibility FromTcpServerConfigVisibility { get => _fromTcpServerConfigVisibility; set => SetProperty(ref _fromTcpServerConfigVisibility, value); }
 
         private Visibility _toTcpServerConfigVisibility;
-        public Visibility ToTcpServerConfigVisibility
-        {
-            get => _toTcpServerConfigVisibility;
-            set => SetProperty(ref _toTcpServerConfigVisibility, value);
-        }
+        public Visibility ToTcpServerConfigVisibility { get => _toTcpServerConfigVisibility; set => SetProperty(ref _toTcpServerConfigVisibility, value); }
+
+        private Visibility _fromUdpConfigVisibility;
+        public Visibility FromUdpConfigVisibility { get => _fromUdpConfigVisibility; set => SetProperty(ref _fromUdpConfigVisibility, value); }
+
+        private Visibility _toUdpConfigVisibility;
+        public Visibility ToUdpConfigVisibility { get => _toUdpConfigVisibility; set => SetProperty(ref _toUdpConfigVisibility, value); }
+
+        private Visibility _fromWebSocketClientConfigVisibility;
+        public Visibility FromWebSocketClientConfigVisibility { get => _fromWebSocketClientConfigVisibility; set => SetProperty(ref _fromWebSocketClientConfigVisibility, value); }
+
+        private Visibility _toWebSocketClientConfigVisibility;
+        public Visibility ToWebSocketClientConfigVisibility { get => _toWebSocketClientConfigVisibility; set => SetProperty(ref _toWebSocketClientConfigVisibility, value); }
+
+        private Visibility _fromWebSocketServerConfigVisibility;
+        public Visibility FromWebSocketServerConfigVisibility { get => _fromWebSocketServerConfigVisibility; set => SetProperty(ref _fromWebSocketServerConfigVisibility, value); }
+
+        private Visibility _toWebSocketServerConfigVisibility;
+        public Visibility ToWebSocketServerConfigVisibility { get => _toWebSocketServerConfigVisibility; set => SetProperty(ref _toWebSocketServerConfigVisibility, value); }
     }
 }

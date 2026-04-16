@@ -1,4 +1,4 @@
-﻿using DataShuttle.Core.Helper;
+using DataShuttle.Core.Helper;
 using DataShuttle.Core.Interfaces;
 using DataShuttle.Core.Models;
 using System;
@@ -12,30 +12,21 @@ namespace DataShuttle.Transports.SerialPort
         private System.IO.Ports.SerialPort _serialPort;
         private SerialPortTransportOptions _options;
         private CancellationTokenSource _startTokenSource;
-
-
-        private bool _isConnected = false;
-        private bool _isError = false;
-        private string _errMsg;
+        private CancellationTokenSource _readTokenSource = new CancellationTokenSource();
+        private bool _isConnected;
 
         public event Action<bool> OnConnectionStatusChanged;
-        public event Action<bool, string> OnErrorStatusChanged;
-        private CancellationTokenSource _readTokenSource = new CancellationTokenSource();
+        public event Action<TransportErrorArgs> OnError;
 
         public bool IsConnected => _isConnected;
-        public string ErrorMsg => _errMsg;
-
-        public bool IsError => _isError;
         public string Name => "串口";
-        public SerialPortTransport() { }//供反射调用
-        private SerialPortTransport(SerialPortTransportOptions options) { this._options = options; }
+
+        public SerialPortTransport() { }
+        private SerialPortTransport(SerialPortTransportOptions options) { _options = options; }
 
         public static SerialPortTransport Create(SerialPortTransportOptions options) => new SerialPortTransport(options);
 
-        public void Dispose()
-        {
-            this.Stop();
-        }
+        public void Dispose() => Stop();
 
         public async Task<OperationResult<byte[]>> Read(CancellationToken token)
         {
@@ -43,11 +34,10 @@ namespace DataShuttle.Transports.SerialPort
 
             var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(token, _readTokenSource.Token, _startTokenSource.Token).Token;
             await MethodHelper.Delay(linkedToken);
+
             if (token.IsCancellationRequested) return OperationResult<byte[]>.NG("Read operation was cancelled.");
+            if (_startTokenSource.IsCancellationRequested) return OperationResult<byte[]>.NG("Transport has been stopped.");
 
-            if (_startTokenSource.IsCancellationRequested) return OperationResult<byte[]>.NG("Transport is has been stopped.");
-
-            //读取串口数据
             try
             {
                 var bytes = new byte[_serialPort.BytesToRead];
@@ -62,7 +52,6 @@ namespace DataShuttle.Transports.SerialPort
             {
                 _readTokenSource = new CancellationTokenSource();
             }
-
         }
 
         public async Task Run()
@@ -83,12 +72,12 @@ namespace DataShuttle.Transports.SerialPort
                             continue;
                         }
 
-                        RaiseConnectStatusChanged(false);
+                        SetConnectionStatus(false);
 
                         if (_serialPort != null)
                         {
                             _serialPort.DataReceived -= SerialPort_DataReceived;
-                            _serialPort?.Dispose();
+                            _serialPort.Dispose();
                         }
 
                         _serialPort = new System.IO.Ports.SerialPort()
@@ -103,36 +92,24 @@ namespace DataShuttle.Transports.SerialPort
                             ReceivedBytesThreshold = 1
                         };
 
-
                         _serialPort.DataReceived += SerialPort_DataReceived;
                         _serialPort.Open();
-
-                        RaiseConnectStatusChanged(true);
-
+                        SetConnectionStatus(true);
                     }
                     catch (Exception ex)
                     {
-                        RaiseErrorChanged(true, ex.Message);
-
+                        OnError?.Invoke(TransportErrorArgs.Create("Connect", ex.Message, ex));
                         await MethodHelper.Delay(TimeSpan.FromSeconds(1), token);
                     }
                 }
             });
         }
 
-        private void RaiseConnectStatusChanged(bool isConnected)
+        private void SetConnectionStatus(bool isConnected)
         {
-            if (_isConnected != isConnected)
-            {
-                _isConnected = isConnected;
-                this.OnConnectionStatusChanged?.Invoke(_isConnected);
-            }
-        }
-        private void RaiseErrorChanged(bool isError, string errMsg)
-        {
-            if (!_isError && !isError) return;
-
-            this.OnErrorStatusChanged?.Invoke(isError, errMsg);
+            if (_isConnected == isConnected) return;
+            _isConnected = isConnected;
+            OnConnectionStatusChanged?.Invoke(_isConnected);
         }
 
         private void SerialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
@@ -142,9 +119,7 @@ namespace DataShuttle.Transports.SerialPort
 
         public async Task Stop()
         {
-            if (_startTokenSource != null)
-                _startTokenSource.Cancel();
-
+            _startTokenSource?.Cancel();
             if (_serialPort != null)
             {
                 try
@@ -153,7 +128,7 @@ namespace DataShuttle.Transports.SerialPort
                     _serialPort.Dispose();
                     _serialPort = null;
                 }
-                catch (Exception ex) { }
+                catch { }
             }
         }
 
@@ -162,14 +137,12 @@ namespace DataShuttle.Transports.SerialPort
             try
             {
                 if (!IsConnected) return OperationResult.NG("Serial port is not connected.");
-
                 _serialPort.Write(data, 0, data.Length);
-
                 return OperationResult.OK();
             }
             catch (Exception e)
             {
-                RaiseErrorChanged(true, e.Message);
+                OnError?.Invoke(TransportErrorArgs.Create("Write", e.Message, e));
                 return OperationResult.NG(e);
             }
         }

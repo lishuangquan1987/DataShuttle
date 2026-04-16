@@ -9,6 +9,9 @@ namespace DataShuttle.WpfSample.Helpers
             TransportFactory.SerialPortName,
             TransportFactory.TcpClientName,
             TransportFactory.TcpServerName,
+            TransportFactory.UdpName,
+            TransportFactory.WebSocketClientName,
+            TransportFactory.WebSocketServerName,
         };
     }
 }

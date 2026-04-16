@@ -1,10 +1,7 @@
-﻿using DataShuttle.Core.Helper;
+using DataShuttle.Core.Helper;
 using DataShuttle.Core.Interfaces;
 using DataShuttle.Core.Models;
 using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TouchSocket.Core;
@@ -19,33 +16,23 @@ namespace DataShuttle.Transports.TcpClient
         private CancellationTokenSource _startTokenSource;
         private IReceiver<IReceiverResult> _receiver = null;
         private bool _isConnected;
-        private bool _isError;
-        private string _errMsg;
+
         public bool IsConnected => _isConnected;
-
-        public bool IsError => _isError;
-
-        public string ErrorMsg => _errMsg;
         public string Name => "TCP客户端";
 
         public event Action<bool> OnConnectionStatusChanged;
-        public event Action<bool, string> OnErrorStatusChanged;
+        public event Action<TransportErrorArgs> OnError;
 
-        public TcpClientTransport()//供反射调用
-        {
-            
-        }
+        public TcpClientTransport() { }
+
         private TcpClientTransport(TcpClientTransportOptions options)
         {
-            this._options = options;
+            _options = options;
         }
 
         public static TcpClientTransport Create(TcpClientTransportOptions options) => new TcpClientTransport(options);
 
-        public void Dispose()
-        {
-            _ = Stop();
-        }
+        public void Dispose() => _ = Stop();
 
         public async Task<OperationResult<byte[]>> Read(CancellationToken token)
         {
@@ -54,11 +41,9 @@ namespace DataShuttle.Transports.TcpClient
                 using (var result = await _receiver.ReadAsync(token))
                 {
                     if (result.IsCompleted) return OperationResult<byte[]>.NG("断开了连接");
-
                     return OperationResult<byte[]>.OK(result.Memory.Span.ToArray());
                 }
             }
-
             return OperationResult<byte[]>.NG("未连接");
         }
 
@@ -67,12 +52,11 @@ namespace DataShuttle.Transports.TcpClient
             await Stop();
 
             _startTokenSource = new CancellationTokenSource();
-
             _tcpClient = new TouchSocket.Sockets.TcpClient();
             _tcpClient.Connected += TcpClientConnected;
             _tcpClient.Closed += TcpClientClosed;
-            //_tcpClient.Received += TcpClientReceived;
-            await _tcpClient.SetupAsync(new TouchSocket.Core.TouchSocketConfig()
+
+            await _tcpClient.SetupAsync(new TouchSocketConfig()
                 .SetRemoteIPHost($"{_options.ServerIp}:{_options.ServerPort}")
                 .ConfigurePlugins(a =>
                 {
@@ -87,35 +71,24 @@ namespace DataShuttle.Transports.TcpClient
                 {
                     try
                     {
-                        await _tcpClient.ConnectAsync(_startTokenSource.Token);
+                        await _tcpClient.ConnectAsync(token);
                         break;
                     }
                     catch (Exception ex)
                     {
                         await MethodHelper.Delay(TimeSpan.FromSeconds(3), token);
-                        SetError(true, ex.Message);
+                        OnError?.Invoke(TransportErrorArgs.Create("Connect", ex.Message, ex));
                     }
                 }
             });
         }
 
-        private void SetError(bool isError, string errorMsg = null)
-        {
-            if (!_isError && !isError) return;
-
-            _errMsg = errorMsg;
-            _isError = isError;
-            this.OnErrorStatusChanged?.Invoke(_isError, _errMsg);
-        }
-
         private void SetConnectionStatus(bool isConnected)
         {
             if (_isConnected == isConnected) return;
-
             _isConnected = isConnected;
-            this.OnConnectionStatusChanged?.Invoke(_isConnected);
+            OnConnectionStatusChanged?.Invoke(_isConnected);
         }
-
 
         private async Task TcpClientClosed(ITcpClient client, ClosedEventArgs e)
         {
@@ -123,8 +96,7 @@ namespace DataShuttle.Transports.TcpClient
             SetConnectionStatus(false);
         }
 
-        private async Task TcpClientConnected(TouchSocket.Sockets.ITcpClient client,
-            TouchSocket.Sockets.ConnectedEventArgs e)
+        private async Task TcpClientConnected(TouchSocket.Sockets.ITcpClient client, ConnectedEventArgs e)
         {
             _receiver = client.CreateReceiver();
             SetConnectionStatus(true);
@@ -141,7 +113,6 @@ namespace DataShuttle.Transports.TcpClient
                     _receiver.Dispose();
                     _receiver = null;
                 }
-
                 await _tcpClient.CloseAsync("主动关闭");
                 _tcpClient.Connected -= TcpClientConnected;
                 _tcpClient.Closed -= TcpClientClosed;
@@ -157,12 +128,11 @@ namespace DataShuttle.Transports.TcpClient
                     await _tcpClient.SendAsync(data, token);
                     return OperationResult.OK();
                 }
-
                 return OperationResult.NG("未连接");
             }
             catch (Exception e)
             {
-                SetError(true, e.Message);
+                OnError?.Invoke(TransportErrorArgs.Create("Write", e.Message, e));
                 return OperationResult.NG(e);
             }
         }

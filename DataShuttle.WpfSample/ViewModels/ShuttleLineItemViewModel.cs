@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DataShuttle.Core.Models;
 using DataShuttle.WpfSample.Configs;
@@ -8,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ShuttleLineClass = DataShuttle.ShuttleLine;
 
 namespace DataShuttle.WpfSample.ViewModels
@@ -36,11 +36,18 @@ namespace DataShuttle.WpfSample.ViewModels
                 if (SetProperty(ref _isRunning, value))
                 {
                     OnPropertyChanged(nameof(ScriptEditorEnabled));
+                    OnPropertyChanged(nameof(RunningStatusText));
+                    OnPropertyChanged(nameof(RunningStatusColor));
                     ((AsyncRelayCommand)StartCmd).NotifyCanExecuteChanged();
                     ((AsyncRelayCommand)StopCmd).NotifyCanExecuteChanged();
                 }
             }
         }
+
+        /// <summary>运行状态文字，供列表卡片和状态面板使用</summary>
+        public string RunningStatusText => IsRunning ? "运行中" : "已停止";
+        /// <summary>运行状态颜色</summary>
+        public string RunningStatusColor => IsRunning ? "#4CAF50" : "#9E9E9E";
 
         private bool _fromIsConnected;
         public bool FromIsConnected
@@ -70,7 +77,6 @@ namespace DataShuttle.WpfSample.ViewModels
             private set => SetProperty(ref _toStatusText, value);
         }
 
-        // 流量统计
         private long _fromBytes;
         private long _toBytes;
 
@@ -88,17 +94,15 @@ namespace DataShuttle.WpfSample.ViewModels
             private set => SetProperty(ref _toTrafficText, value);
         }
 
-        // 日志列表（替代 ErrorText）
-        public ObservableCollection<string> Logs { get; } = new ObservableCollection<string>();
+        public ObservableCollection<LogEntry> Logs { get; } = new ObservableCollection<LogEntry>();
 
-        private void AddLog(string msg)
+        private void AddLog(LogLevel level, string msg)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new System.Action(() =>
             {
-                var entry = $"[{DateTime.Now:HH:mm:ss}] {msg}";
-                Logs.Add(entry);
-                if (Logs.Count > 200) Logs.RemoveAt(0);
-            });
+                Logs.Add(new LogEntry(level, msg));
+                if (Logs.Count > 500) Logs.RemoveAt(0);
+            }));
         }
 
         public bool ScriptEditorEnabled => !IsRunning;
@@ -116,7 +120,7 @@ namespace DataShuttle.WpfSample.ViewModels
 
             if (from == null || to == null)
             {
-                AddLog("Transport 配置不完整，请先编辑配置");
+                AddLog(LogLevel.Error, "Transport 配置不完整，请先编辑配置");
                 return;
             }
 
@@ -130,15 +134,17 @@ namespace DataShuttle.WpfSample.ViewModels
                 {
                     FromIsConnected = connected;
                     FromStatusText = connected ? "已连接" : "未连接";
+                    AddLog(LogLevel.Info, connected ? "[左] 已连接" : "[左] 连接断开");
                 });
             to.OnConnectionStatusChanged += connected =>
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     ToIsConnected = connected;
                     ToStatusText = connected ? "已连接" : "未连接";
+                    AddLog(LogLevel.Info, connected ? "[右] 已连接" : "[右] 连接断开");
                 });
-            from.OnErrorStatusChanged += (isErr, msg) => { if (isErr) AddLog("[左] " + msg); };
-            to.OnErrorStatusChanged += (isErr, msg) => { if (isErr) AddLog("[右] " + msg); };
+            from.OnError += args => AddLog(LogLevel.Error, $"[左][{args.Operation}] {args.Message}");
+            to.OnError += args => AddLog(LogLevel.Error, $"[右][{args.Operation}] {args.Message}");
 
             Action<InterceptContext> fromIntercept = null;
             Action<InterceptContext> toIntercept = null;
@@ -150,7 +156,7 @@ namespace DataShuttle.WpfSample.ViewModels
                 if (_fromInterceptor.Load(Config.FromInterceptorScript))
                     fromIntercept = _fromInterceptor.Intercept;
                 else
-                    AddLog("[左脚本] " + _fromInterceptor.LastError);
+                    AddLog(LogLevel.Warning, "[左脚本] " + _fromInterceptor.LastError);
             }
 
             if (!string.IsNullOrWhiteSpace(Config.ToInterceptorScript))
@@ -160,10 +166,9 @@ namespace DataShuttle.WpfSample.ViewModels
                 if (_toInterceptor.Load(Config.ToInterceptorScript))
                     toIntercept = _toInterceptor.Intercept;
                 else
-                    AddLog("[右脚本] " + _toInterceptor.LastError);
+                    AddLog(LogLevel.Warning, "[右脚本] " + _toInterceptor.LastError);
             }
 
-            // 在拦截器外层叠加流量计数
             Action<InterceptContext> fromWithStats = ctx =>
             {
                 fromIntercept?.Invoke(ctx);
@@ -171,7 +176,7 @@ namespace DataShuttle.WpfSample.ViewModels
                 {
                     _fromBytes += ctx.Data?.Length ?? 0;
                     Application.Current.Dispatcher.Invoke(() =>
-                        FromTrafficText = $"↑ {FormatBytes(_fromBytes)}");
+                        FromTrafficText = FormatBytes(_fromBytes));
                 }
             };
             Action<InterceptContext> toWithStats = ctx =>
@@ -181,7 +186,7 @@ namespace DataShuttle.WpfSample.ViewModels
                 {
                     _toBytes += ctx.Data?.Length ?? 0;
                     Application.Current.Dispatcher.Invoke(() =>
-                        ToTrafficText = $"↑ {FormatBytes(_toBytes)}");
+                        ToTrafficText = FormatBytes(_toBytes));
                 }
             };
 
@@ -194,7 +199,7 @@ namespace DataShuttle.WpfSample.ViewModels
 
             await _shuttleLine.Run();
             IsRunning = true;
-            AddLog("已启动");
+            AddLog(LogLevel.Info, "穿梭线已启动");
         }
 
         private async Task Stop()
@@ -216,7 +221,7 @@ namespace DataShuttle.WpfSample.ViewModels
             FromStatusText = "未连接";
             ToIsConnected = false;
             ToStatusText = "未连接";
-            AddLog("已停止");
+            AddLog(LogLevel.Info, "穿梭线已停止");
         }
 
         public void RefreshSummaries()
