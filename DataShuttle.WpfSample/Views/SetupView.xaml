@@ -8,7 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:DataShuttle.WpfSample.ViewModels"
-    Width="760" Height="500"
+    Width="760"
+    Height="500"
     d:DataContext="{d:DesignInstance vm:SetupViewModel}"
     Background="{DynamicResource RegionBrush}"
     mc:Ignorable="d">
@@ -17,199 +18,256 @@
         <sys:Double x:Key="LabelW">120</sys:Double>
         <sys:Double x:Key="FieldW">170</sys:Double>
 
-        <!-- 统一表单行样式 -->
+        <!--  统一表单行样式  -->
         <Style x:Key="FormRow" TargetType="StackPanel">
-            <Setter Property="Orientation" Value="Horizontal"/>
-            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Margin" Value="0,5" />
         </Style>
         <Style x:Key="FormLabel" TargetType="TextBlock">
-            <Setter Property="Width" Value="{StaticResource LabelW}"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Foreground" Value="#546E7A"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="TextAlignment" Value="Right"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Width" Value="{StaticResource LabelW}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="#546E7A" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="Margin" Value="0,0,8,0" />
         </Style>
-        <Style x:Key="FormField" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-            <Setter Property="Width" Value="{StaticResource FieldW}"/>
-            <Setter Property="Height" Value="28"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="6,0"/>
+        <Style
+            x:Key="FormField"
+            BasedOn="{StaticResource {x:Type TextBox}}"
+            TargetType="TextBox">
+            <Setter Property="Width" Value="{StaticResource FieldW}" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="6,0" />
         </Style>
-        <Style x:Key="FormCombo" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
-            <Setter Property="Width" Value="{StaticResource FieldW}"/>
-            <Setter Property="Height" Value="28"/>
+        <Style
+            x:Key="FormCombo"
+            BasedOn="{StaticResource {x:Type ComboBox}}"
+            TargetType="ComboBox">
+            <Setter Property="Width" Value="{StaticResource FieldW}" />
+            <Setter Property="Height" Value="28" />
         </Style>
 
-        <!-- 端面板标题 -->
+        <!--  端面板标题  -->
         <Style x:Key="PanelTitle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
-        <!-- 顶部：线路名称 -->
-        <Border Grid.Row="0" Background="#F5F7FA"
-            BorderBrush="#E0E4EA" BorderThickness="0,0,0,1" Padding="16,0">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <icons:MaterialIcon Kind="SwapHorizontal" Width="18" Height="18"
-                    Foreground="#1565C0" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                <TextBlock Text="线路名称" Style="{StaticResource FormLabel}"
-                    Width="Auto" Margin="0,0,10,0" FontSize="13" Foreground="#333"/>
-                <TextBox Width="220" Height="30" VerticalContentAlignment="Center" Padding="8,0"
-                    Text="{Binding ItemConfig.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    hc:InfoElement.Placeholder="请输入线路名称"/>
+        <!--  顶部：线路名称  -->
+        <Border
+            Grid.Row="0"
+            Padding="16,0"
+            Background="#F5F7FA"
+            BorderBrush="#E0E4EA"
+            BorderThickness="0,0,0,1">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <icons:MaterialIcon
+                    Width="18"
+                    Height="18"
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    Foreground="#1565C0"
+                    Kind="SwapHorizontal" />
+                <TextBlock
+                    Width="Auto"
+                    Margin="0,0,10,0"
+                    FontSize="13"
+                    Foreground="#333"
+                    Style="{StaticResource FormLabel}"
+                    Text="线路名称" />
+                <TextBox
+                    Width="220"
+                    Height="30"
+                    Padding="8,0"
+                    VerticalContentAlignment="Center"
+                    hc:InfoElement.Placeholder="请输入线路名称"
+                    Text="{Binding ItemConfig.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
         </Border>
 
-        <!-- 中部：左右端配置 -->
+        <!--  中部：左右端配置  -->
         <Grid Grid.Row="1" Margin="12,10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="44"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="44" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- ── 左端 ── -->
-            <Border Grid.Column="0" CornerRadius="6" Background="White"
-                BorderBrush="#BBDEFB" BorderThickness="1.5">
+            <!--  ── 左端 ──  -->
+            <Border
+                Grid.Column="0"
+                Background="White"
+                BorderBrush="#BBDEFB"
+                BorderThickness="1.5"
+                CornerRadius="6">
                 <Border.Effect>
-                    <DropShadowEffect Color="#000" Opacity="0.05" BlurRadius="6" ShadowDepth="1"/>
+                    <DropShadowEffect
+                        BlurRadius="6"
+                        Opacity="0.05"
+                        ShadowDepth="1"
+                        Color="#000" />
                 </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="38"/>
-                        <RowDefinition Height="44"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="38" />
+                        <RowDefinition Height="44" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <!-- 标题 -->
-                    <Border Grid.Row="0" Background="#E3F2FD" CornerRadius="6,6,0,0" Padding="12,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Border Width="20" Height="20" CornerRadius="10" Background="#1565C0" Margin="0,0,8,0">
-                                <TextBlock Text="左" Foreground="White" FontSize="11"
-                                    FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <!--  标题  -->
+                    <Border
+                        Grid.Row="0"
+                        Padding="12,0"
+                        Background="#E3F2FD"
+                        CornerRadius="6,6,0,0">
+                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                            <Border
+                                Width="20"
+                                Height="20"
+                                Margin="0,0,8,0"
+                                Background="#1565C0"
+                                CornerRadius="10">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="11"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    Text="左" />
                             </Border>
-                            <TextBlock Text="左端配置" Style="{StaticResource PanelTitle}" Foreground="#1565C0"/>
+                            <TextBlock
+                                Foreground="#1565C0"
+                                Style="{StaticResource PanelTitle}"
+                                Text="左端配置" />
                         </StackPanel>
                     </Border>
 
-                    <!-- 传输方式选择 -->
-                    <Border Grid.Row="1" Background="#F8FBFF" BorderBrush="#E3F2FD" BorderThickness="0,0,0,1" Padding="12,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="传输方式" Style="{StaticResource FormLabel}" Width="60"/>
-                            <ComboBox Height="28" Width="180"
+                    <!--  传输方式选择  -->
+                    <Border
+                        Grid.Row="1"
+                        Padding="12,0"
+                        Background="#F8FBFF"
+                        BorderBrush="#E3F2FD"
+                        BorderThickness="0,0,0,1">
+                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                            <TextBlock
+                                Width="60"
+                                Style="{StaticResource FormLabel}"
+                                Text="传输方式" />
+                            <ComboBox
+                                Width="180"
+                                Height="28"
                                 ItemsSource="{Binding PluginNames}"
-                                SelectedItem="{Binding ItemConfig.FromTransportConfig.Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                SelectedItem="{Binding ItemConfig.FromTransportConfig.Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Border>
 
-                    <!-- 参数区 -->
-                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="12,8">
+                    <!--  参数区  -->
+                    <ScrollViewer
+                        Grid.Row="2"
+                        Padding="12,8"
+                        VerticalScrollBarVisibility="Auto">
                         <StackPanel>
-                            <!-- 串口 -->
+                            <!--  串口  -->
                             <StackPanel Visibility="{Binding From串口ConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="串口名称" Style="{StaticResource FormLabel}"/>
-                                    <ComboBox Style="{StaticResource FormCombo}" IsEditable="True"
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="串口名称" />
+                                    <ComboBox
+                                        IsEditable="True"
                                         ItemsSource="{Binding SerialPorts}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.SerialPortTransportConfig.PortName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        Style="{StaticResource FormCombo}"
+                                        Text="{Binding ItemConfig.FromTransportConfig.SerialPortTransportConfig.PortName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="波特率" Style="{StaticResource FormLabel}"/>
-                                    <ComboBox Style="{StaticResource FormCombo}" IsEditable="True"
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="波特率" />
+                                    <ComboBox
+                                        IsEditable="True"
                                         ItemsSource="{Binding BaudRates}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.SerialPortTransportConfig.BauRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        Style="{StaticResource FormCombo}"
+                                        Text="{Binding ItemConfig.FromTransportConfig.SerialPortTransportConfig.BauRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="奇偶校验" Style="{StaticResource FormLabel}"/>
-                                    <ComboBox Style="{StaticResource FormCombo}"
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="奇偶校验" />
+                                    <ComboBox
                                         ItemsSource="{Binding Parities}"
-                                        SelectedItem="{Binding ItemConfig.FromTransportConfig.SerialPortTransportConfig.Parity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        SelectedItem="{Binding ItemConfig.FromTransportConfig.SerialPortTransportConfig.Parity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormCombo}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="数据位" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.SerialPortTransportConfig.DataBits}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="数据位" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.SerialPortTransportConfig.DataBits}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="停止位" Style="{StaticResource FormLabel}"/>
-                                    <ComboBox Style="{StaticResource FormCombo}"
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="停止位" />
+                                    <ComboBox
                                         ItemsSource="{Binding StopBits}"
-                                        SelectedItem="{Binding ItemConfig.FromTransportConfig.SerialPortTransportConfig.StopBits, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        SelectedItem="{Binding ItemConfig.FromTransportConfig.SerialPortTransportConfig.StopBits, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormCombo}" />
                                 </StackPanel>
                             </StackPanel>
-                            <!-- TCP客户端 -->
+                            <!--  TCP客户端  -->
                             <StackPanel Visibility="{Binding FromTcpClientConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="服务端 IP" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.TcpClientTransportConfig.ServerIp}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="服务端 IP" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.TcpClientTransportConfig.ServerIp}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="服务端端口" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.TcpClientTransportConfig.ServerPort}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="服务端端口" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.TcpClientTransportConfig.ServerPort}" />
                                 </StackPanel>
                             </StackPanel>
-                            <!-- TCP服务端 -->
+                            <!--  TCP服务端  -->
                             <StackPanel Visibility="{Binding FromTcpServerConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="绑定 IP" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.TcpServerTransportConfig.BindingIp}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="绑定 IP" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.TcpServerTransportConfig.BindingIp}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="绑定端口" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.TcpServerTransportConfig.BindingPort}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="绑定端口" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.TcpServerTransportConfig.BindingPort}" />
                                 </StackPanel>
                             </StackPanel>
-                            <!-- UDP -->
+                            <!--  UDP  -->
                             <StackPanel Visibility="{Binding FromUdpConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="本地绑定端口" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.UdpTransportConfig.BindingPort}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="本地绑定端口" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.UdpTransportConfig.BindingPort}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="目标 IP" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.UdpTransportConfig.RemoteIp}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="目标 IP" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.UdpTransportConfig.RemoteIp}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="目标端口" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.UdpTransportConfig.RemotePort}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="目标端口" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.UdpTransportConfig.RemotePort}" />
                                 </StackPanel>
                             </StackPanel>
-                            <!-- WebSocket客户端 -->
+                            <!--  WebSocket客户端  -->
                             <StackPanel Visibility="{Binding FromWebSocketClientConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="服务器地址" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.WebSocketClientTransportConfig.Url}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="服务器地址" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.WebSocketClientTransportConfig.Url}" />
                                 </StackPanel>
                             </StackPanel>
-                            <!-- WebSocket服务端 -->
+                            <!--  WebSocket服务端  -->
                             <StackPanel Visibility="{Binding FromWebSocketServerConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="绑定端口" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.WebSocketServerTransportConfig.BindingPort}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="绑定端口" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.WebSocketServerTransportConfig.BindingPort}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="路由路径" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.FromTransportConfig.WebSocketServerTransportConfig.Path}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="路由路径" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.FromTransportConfig.WebSocketServerTransportConfig.Path}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
@@ -217,143 +275,183 @@
                 </Grid>
             </Border>
 
-            <!-- 中间箭头 -->
-            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <icons:MaterialIcon Kind="ArrowLeftRight" Width="22" Height="22" Foreground="#90A4AE"/>
+            <!--  中间箭头  -->
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <icons:MaterialIcon
+                    Width="22"
+                    Height="22"
+                    Foreground="#90A4AE"
+                    Kind="ArrowLeftRight" />
             </StackPanel>
 
-            <!-- ── 右端 ── -->
-            <Border Grid.Column="2" CornerRadius="6" Background="White"
-                BorderBrush="#C8E6C9" BorderThickness="1.5">
+            <!--  ── 右端 ──  -->
+            <Border
+                Grid.Column="2"
+                Background="White"
+                BorderBrush="#C8E6C9"
+                BorderThickness="1.5"
+                CornerRadius="6">
                 <Border.Effect>
-                    <DropShadowEffect Color="#000" Opacity="0.05" BlurRadius="6" ShadowDepth="1"/>
+                    <DropShadowEffect
+                        BlurRadius="6"
+                        Opacity="0.05"
+                        ShadowDepth="1"
+                        Color="#000" />
                 </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="38"/>
-                        <RowDefinition Height="44"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="38" />
+                        <RowDefinition Height="44" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <!-- 标题 -->
-                    <Border Grid.Row="0" Background="#E8F5E9" CornerRadius="6,6,0,0" Padding="12,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Border Width="20" Height="20" CornerRadius="10" Background="#2E7D32" Margin="0,0,8,0">
-                                <TextBlock Text="右" Foreground="White" FontSize="11"
-                                    FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <!--  标题  -->
+                    <Border
+                        Grid.Row="0"
+                        Padding="12,0"
+                        Background="#E8F5E9"
+                        CornerRadius="6,6,0,0">
+                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                            <Border
+                                Width="20"
+                                Height="20"
+                                Margin="0,0,8,0"
+                                Background="#2E7D32"
+                                CornerRadius="10">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="11"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    Text="右" />
                             </Border>
-                            <TextBlock Text="右端配置" Style="{StaticResource PanelTitle}" Foreground="#2E7D32"/>
+                            <TextBlock
+                                Foreground="#2E7D32"
+                                Style="{StaticResource PanelTitle}"
+                                Text="右端配置" />
                         </StackPanel>
                     </Border>
 
-                    <!-- 传输方式选择 -->
-                    <Border Grid.Row="1" Background="#F8FFF8" BorderBrush="#C8E6C9" BorderThickness="0,0,0,1" Padding="12,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="传输方式" Style="{StaticResource FormLabel}" Width="60"/>
-                            <ComboBox Height="28" Width="180"
+                    <!--  传输方式选择  -->
+                    <Border
+                        Grid.Row="1"
+                        Padding="12,0"
+                        Background="#F8FFF8"
+                        BorderBrush="#C8E6C9"
+                        BorderThickness="0,0,0,1">
+                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                            <TextBlock
+                                Width="60"
+                                Style="{StaticResource FormLabel}"
+                                Text="传输方式" />
+                            <ComboBox
+                                Width="180"
+                                Height="28"
                                 ItemsSource="{Binding PluginNames}"
-                                SelectedItem="{Binding ItemConfig.ToTransportConfig.Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                SelectedItem="{Binding ItemConfig.ToTransportConfig.Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </Border>
 
-                    <!-- 参数区 -->
-                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="12,8">
+                    <!--  参数区  -->
+                    <ScrollViewer
+                        Grid.Row="2"
+                        Padding="12,8"
+                        VerticalScrollBarVisibility="Auto">
                         <StackPanel>
-                            <!-- 串口 -->
+                            <!--  串口  -->
                             <StackPanel Visibility="{Binding To串口ConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="串口名称" Style="{StaticResource FormLabel}"/>
-                                    <ComboBox Style="{StaticResource FormCombo}" IsEditable="True"
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="串口名称" />
+                                    <ComboBox
+                                        IsEditable="True"
                                         ItemsSource="{Binding SerialPorts}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.SerialPortTransportConfig.PortName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        Style="{StaticResource FormCombo}"
+                                        Text="{Binding ItemConfig.ToTransportConfig.SerialPortTransportConfig.PortName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="波特率" Style="{StaticResource FormLabel}"/>
-                                    <ComboBox Style="{StaticResource FormCombo}" IsEditable="True"
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="波特率" />
+                                    <ComboBox
+                                        IsEditable="True"
                                         ItemsSource="{Binding BaudRates}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.SerialPortTransportConfig.BauRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        Style="{StaticResource FormCombo}"
+                                        Text="{Binding ItemConfig.ToTransportConfig.SerialPortTransportConfig.BauRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="奇偶校验" Style="{StaticResource FormLabel}"/>
-                                    <ComboBox Style="{StaticResource FormCombo}"
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="奇偶校验" />
+                                    <ComboBox
                                         ItemsSource="{Binding Parities}"
-                                        SelectedItem="{Binding ItemConfig.ToTransportConfig.SerialPortTransportConfig.Parity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        SelectedItem="{Binding ItemConfig.ToTransportConfig.SerialPortTransportConfig.Parity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormCombo}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="数据位" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.SerialPortTransportConfig.DataBits}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="数据位" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.SerialPortTransportConfig.DataBits}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="停止位" Style="{StaticResource FormLabel}"/>
-                                    <ComboBox Style="{StaticResource FormCombo}"
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="停止位" />
+                                    <ComboBox
                                         ItemsSource="{Binding StopBits}"
-                                        SelectedItem="{Binding ItemConfig.ToTransportConfig.SerialPortTransportConfig.StopBits, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        SelectedItem="{Binding ItemConfig.ToTransportConfig.SerialPortTransportConfig.StopBits, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormCombo}" />
                                 </StackPanel>
                             </StackPanel>
-                            <!-- TCP客户端 -->
+                            <!--  TCP客户端  -->
                             <StackPanel Visibility="{Binding ToTcpClientConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="服务端 IP" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.TcpClientTransportConfig.ServerIp}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="服务端 IP" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.TcpClientTransportConfig.ServerIp}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="服务端端口" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.TcpClientTransportConfig.ServerPort}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="服务端端口" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.TcpClientTransportConfig.ServerPort}" />
                                 </StackPanel>
                             </StackPanel>
-                            <!-- TCP服务端 -->
+                            <!--  TCP服务端  -->
                             <StackPanel Visibility="{Binding ToTcpServerConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="绑定 IP" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.TcpServerTransportConfig.BindingIp}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="绑定 IP" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.TcpServerTransportConfig.BindingIp}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="绑定端口" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.TcpServerTransportConfig.BindingPort}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="绑定端口" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.TcpServerTransportConfig.BindingPort}" />
                                 </StackPanel>
                             </StackPanel>
-                            <!-- UDP -->
+                            <!--  UDP  -->
                             <StackPanel Visibility="{Binding ToUdpConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="本地绑定端口" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.UdpTransportConfig.BindingPort}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="本地绑定端口" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.UdpTransportConfig.BindingPort}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="目标 IP" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.UdpTransportConfig.RemoteIp}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="目标 IP" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.UdpTransportConfig.RemoteIp}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="目标端口" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.UdpTransportConfig.RemotePort}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="目标端口" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.UdpTransportConfig.RemotePort}" />
                                 </StackPanel>
                             </StackPanel>
-                            <!-- WebSocket客户端 -->
+                            <!--  WebSocket客户端  -->
                             <StackPanel Visibility="{Binding ToWebSocketClientConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="服务器地址" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.WebSocketClientTransportConfig.Url}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="服务器地址" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.WebSocketClientTransportConfig.Url}" />
                                 </StackPanel>
                             </StackPanel>
-                            <!-- WebSocket服务端 -->
+                            <!--  WebSocket服务端  -->
                             <StackPanel Visibility="{Binding ToWebSocketServerConfigVisibility}">
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="绑定端口" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.WebSocketServerTransportConfig.BindingPort}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="绑定端口" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.WebSocketServerTransportConfig.BindingPort}" />
                                 </StackPanel>
                                 <StackPanel Style="{StaticResource FormRow}">
-                                    <TextBlock Text="路由路径" Style="{StaticResource FormLabel}"/>
-                                    <TextBox Style="{StaticResource FormField}"
-                                        Text="{Binding ItemConfig.ToTransportConfig.WebSocketServerTransportConfig.Path}"/>
+                                    <TextBlock Style="{StaticResource FormLabel}" Text="路由路径" />
+                                    <TextBox Style="{StaticResource FormField}" Text="{Binding ItemConfig.ToTransportConfig.WebSocketServerTransportConfig.Path}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
@@ -362,22 +460,50 @@
             </Border>
         </Grid>
 
-        <!-- 底部操作栏 -->
-        <Border Grid.Row="2" Background="#F5F7FA"
-            BorderBrush="#E0E4EA" BorderThickness="0,1,0,0" Padding="16,0">
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                <Button Width="88" Height="32" Margin="0,0,10,0"
-                    Command="{Binding CancelCmd}" Style="{StaticResource ButtonDefault}">
+        <!--  底部操作栏  -->
+        <Border
+            Grid.Row="2"
+            Padding="16,0"
+            Background="#F5F7FA"
+            BorderBrush="#E0E4EA"
+            BorderThickness="0,1,0,0">
+            <StackPanel
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Width="88"
+                    Height="32"
+                    Margin="0,0,10,0"
+                    Command="{Binding CancelCmd}"
+                    Style="{StaticResource ButtonDefault}">
                     <StackPanel Orientation="Horizontal">
-                        <icons:MaterialIcon Kind="Close" Width="14" Height="14" VerticalAlignment="Center"/>
-                        <TextBlock Text="取消" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        <icons:MaterialIcon
+                            Width="14"
+                            Height="14"
+                            VerticalAlignment="Center"
+                            Kind="Close" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="取消" />
                     </StackPanel>
                 </Button>
-                <Button Width="88" Height="32"
-                    Command="{Binding SureCmd}" Style="{StaticResource ButtonPrimary}">
+                <Button
+                    Width="88"
+                    Height="32"
+                    Command="{Binding SureCmd}"
+                    Style="{StaticResource ButtonPrimary}">
                     <StackPanel Orientation="Horizontal">
-                        <icons:MaterialIcon Kind="Check" Width="14" Height="14" VerticalAlignment="Center"/>
-                        <TextBlock Text="确定" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        <icons:MaterialIcon
+                            Width="14"
+                            Height="14"
+                            VerticalAlignment="Center"
+                            Kind="Check" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="确定" />
                     </StackPanel>
                 </Button>
             </StackPanel>

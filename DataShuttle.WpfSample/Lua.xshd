@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SyntaxDefinition name="Lua" extensions=".lua" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Comment"       foreground="#6A9955" fontStyle="italic"/>
+  <Color name="String"        foreground="#CE9178"/>
+  <Color name="Keyword"       foreground="#569CD6" fontWeight="bold"/>
+  <Color name="BuiltinFunc"   foreground="#DCDCAA"/>
+  <Color name="Number"        foreground="#B5CEA8"/>
+  <Color name="Operator"      foreground="#D4D4D4"/>
+  <Color name="DataShuttleApi" foreground="#4EC9B0" fontWeight="bold"/>
+
+  <RuleSet>
+    <!-- 单行注释 -->
+    <Span color="Comment" begin="&#45;&#45;(?!\[)" end="\n"/>
+    <!-- 多行注释 -->
+    <Span color="Comment" multiline="true" begin="&#45;&#45;\[\[" end="\]\]"/>
+
+    <!-- 字符串 [[ ]] -->
+    <Span color="String" multiline="true" begin="\[\[" end="\]\]"/>
+    <!-- 双引号字符串 -->
+    <Span color="String" begin="&quot;" end="&quot;">
+      <RuleSet>
+        <Span begin="\\" end="."/>
+      </RuleSet>
+    </Span>
+    <!-- 单引号字符串 -->
+    <Span color="String" begin="'" end="'">
+      <RuleSet>
+        <Span begin="\\" end="."/>
+      </RuleSet>
+    </Span>
+
+    <!-- DataShuttle 注入 API -->
+    <Keywords color="DataShuttleApi">
+      <Word>data</Word>
+      <Word>intercept</Word>
+    </Keywords>
+
+    <!-- Lua 关键字 -->
+    <Keywords color="Keyword">
+      <Word>and</Word>
+      <Word>break</Word>
+      <Word>do</Word>
+      <Word>else</Word>
+      <Word>elseif</Word>
+      <Word>end</Word>
+      <Word>false</Word>
+      <Word>for</Word>
+      <Word>function</Word>
+      <Word>goto</Word>
+      <Word>if</Word>
+      <Word>in</Word>
+      <Word>local</Word>
+      <Word>nil</Word>
+      <Word>not</Word>
+      <Word>or</Word>
+      <Word>repeat</Word>
+      <Word>return</Word>
+      <Word>then</Word>
+      <Word>true</Word>
+      <Word>until</Word>
+      <Word>while</Word>
+    </Keywords>
+
+    <!-- 内置函数 -->
+    <Keywords color="BuiltinFunc">
+      <Word>print</Word>
+      <Word>tostring</Word>
+      <Word>tonumber</Word>
+      <Word>type</Word>
+      <Word>pairs</Word>
+      <Word>ipairs</Word>
+      <Word>next</Word>
+      <Word>select</Word>
+      <Word>unpack</Word>
+      <Word>error</Word>
+      <Word>assert</Word>
+      <Word>pcall</Word>
+      <Word>xpcall</Word>
+      <Word>rawget</Word>
+      <Word>rawset</Word>
+      <Word>rawequal</Word>
+      <Word>setmetatable</Word>
+      <Word>getmetatable</Word>
+      <Word>require</Word>
+      <Word>load</Word>
+      <Word>loadstring</Word>
+      <Word>dofile</Word>
+      <Word>collectgarbage</Word>
+      <Word>string</Word>
+      <Word>table</Word>
+      <Word>math</Word>
+      <Word>io</Word>
+      <Word>os</Word>
+      <Word>bit</Word>
+    </Keywords>
+
+    <!-- 数字 -->
+    <Rule color="Number">
+      \b0x[0-9a-fA-F]+\b|\b\d+(\.\d+)?([eE][+-]?\d+)?\b
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>
